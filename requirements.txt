@@ -1,5 +1,0 @@
-streamlit
-pypsa
-pandas
-matplotlib
-numpy
