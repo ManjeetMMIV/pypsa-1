@@ -207,7 +207,7 @@ def print_dispatch_table(n):
     print(f"  Solar PV     : {solar_energy:8.1f} MWh  ({100*solar_energy/total_energy:.1f}%)")
     print(f"  Total        : {total_energy:8.1f} MWh")
 
-    # --- cost ---
+     # --- cost ---
     conv_cost = conv_energy * CONV_COST
     print(f"\n  Fuel cost (conventional only) : ${conv_cost:,.0f}")
     print(f"  Without solar (all conv)     : ${total_energy * CONV_COST:,.0f}")
