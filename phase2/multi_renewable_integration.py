@@ -76,14 +76,14 @@ HYDRO_PNOM    = 20.0    # MW  – small run-of-river hydro
 HYDRO_COST    = 5.0     # $/MWh – O&M only (water is free)
 
 
-# ---- Loads (constant for clarity) ----
-LOAD_BUS2_P   = 60.0    # MW – industrial
+# ---- Loads (base / peak values – actual profiles are time-varying) ----
+LOAD_BUS2_P   = 60.0    # MW – industrial base
 LOAD_BUS2_Q   = 20.0    # MVAr
-LOAD_BUS4_P   = 100.0   # MW – city
+LOAD_BUS4_P   = 100.0   # MW – city base
 LOAD_BUS4_Q   = 35.0    # MVAr
-LOAD_BUS5_P   = 25.0    # MW – rural
+LOAD_BUS5_P   = 25.0    # MW – rural base
 LOAD_BUS5_Q   = 8.0     # MVAr
-TOTAL_LOAD    = LOAD_BUS2_P + LOAD_BUS4_P + LOAD_BUS5_P  # 185 MW
+TOTAL_LOAD    = LOAD_BUS2_P + LOAD_BUS4_P + LOAD_BUS5_P  # 185 MW avg
 
 # ---- Lines ----
 LINE_R_PER_KM = 0.032   # ohm/km
@@ -100,6 +100,50 @@ LINES = [
     ("L5-1",  "Bus 5", "Bus 1",  40),
     ("L1-4",  "Bus 1", "Bus 4",  90),   # cross-link for reliability
 ]
+
+
+# ====================================================================
+#                     LOAD  PROFILES
+# ====================================================================
+
+def load_profile(hours: int) -> dict:
+    """
+    Generate realistic 24-hour load profiles for all three load buses.
+
+    Returns a dict with keys 'bus2', 'bus4', 'bus5', each an ndarray
+    of MW values.  Daily mean equals the base MW constant.
+
+    Bus 4 – City:       dual-peak (morning + evening), overnight trough.
+    Bus 2 – Industrial: flat weekday, ramp up/down at shift changes.
+    Bus 5 – Rural:      mild dual-peak, lower overnight.
+    """
+    t = np.arange(hours, dtype=float)
+
+    # City / residential (Bus 4)
+    city = (0.85
+            + 0.10 * np.sin(np.pi * (t - 5) / 12)
+            + 0.12 * np.exp(-0.5 * ((t - 19) / 1.8)**2)
+            - 0.15 * np.exp(-0.5 * ((t - 3) / 2.5)**2))
+    city = city / city.mean()
+    city_mw = LOAD_BUS4_P * city
+
+    # Industrial (Bus 2)
+    ind = (0.90
+           + 0.12 * np.tanh((t - 6.5) / 1.0)
+           - 0.12 * np.tanh((t - 20) / 1.5)
+           - 0.08 * np.exp(-0.5 * ((t - 3) / 2.0)**2))
+    ind = ind / ind.mean()
+    ind_mw = LOAD_BUS2_P * ind
+
+    # Rural (Bus 5)
+    rural = (0.90
+             + 0.08 * np.sin(np.pi * (t - 5) / 12)
+             + 0.08 * np.exp(-0.5 * ((t - 19) / 2.0)**2)
+             - 0.10 * np.exp(-0.5 * ((t - 3) / 3.0)**2))
+    rural = rural / rural.mean()
+    rural_mw = LOAD_BUS5_P * rural
+
+    return {"bus2": ind_mw, "bus4": city_mw, "bus5": rural_mw}
 
 
 # ====================================================================
@@ -175,13 +219,14 @@ def build_network():
           marginal_cost=HYDRO_COST, carrier="hydro")
 
 
-    # --- loads ---
+    # --- loads (time-varying) ---
+    lp = load_profile(HOURS)
     n.add("Load", "Industrial (Bus 2)",
-          bus="Bus 2", p_set=LOAD_BUS2_P, q_set=LOAD_BUS2_Q)
+          bus="Bus 2", p_set=lp["bus2"], q_set=LOAD_BUS2_Q)
     n.add("Load", "City (Bus 4)",
-          bus="Bus 4", p_set=LOAD_BUS4_P, q_set=LOAD_BUS4_Q)
+          bus="Bus 4", p_set=lp["bus4"], q_set=LOAD_BUS4_Q)
     n.add("Load", "Rural (Bus 5)",
-          bus="Bus 5", p_set=LOAD_BUS5_P, q_set=LOAD_BUS5_Q)
+          bus="Bus 5", p_set=lp["bus5"], q_set=LOAD_BUS5_Q)
 
     # --- transmission lines ---
     for name, b0, b1, km in LINES:
@@ -430,7 +475,10 @@ if __name__ == "__main__":
     print(f"  Wind Farm    : {WIND_PNOM:6.0f} MW  ($0/MWh)")
     print(f"  Small Hydro  : {HYDRO_PNOM:6.0f} MW  (${HYDRO_COST}/MWh)")
     print(f"  Total RE cap : {SOLAR_PNOM + WIND_PNOM + HYDRO_PNOM:.0f} MW")
-    print(f"\nTotal load: {TOTAL_LOAD} MW (constant)")
+    lp = load_profile(HOURS)
+    total_min = lp['bus2'].min() + lp['bus4'].min() + lp['bus5'].min()
+    total_max = lp['bus2'].max() + lp['bus4'].max() + lp['bus5'].max()
+    print(f"\nTotal load: {TOTAL_LOAD} MW avg  (varies {total_min:.1f} – {total_max:.1f} MW)")
 
     # Solve
     print("\n--- Running 24-hour Linear OPF ---")

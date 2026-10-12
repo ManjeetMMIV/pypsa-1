@@ -73,10 +73,10 @@ CONV_COST     = 40.0   # $/MWh – fuel + O&M
 WIND_PNOM     = 100.0  # MW   – wind farm rated capacity
 WIND_COST     = 0.0    # $/MWh – zero marginal cost (fuel-free)
 
-# Load data  (constant across the day for clarity)
-LOAD_BUS2_P   = 60.0   # MW
+# Load data  (base / peak values – actual profiles are time-varying)
+LOAD_BUS2_P   = 60.0   # MW  – industrial base
 LOAD_BUS2_Q   = 20.0   # MVAr
-LOAD_BUS4_P   = 100.0  # MW
+LOAD_BUS4_P   = 100.0  # MW  – city base
 LOAD_BUS4_Q   = 35.0   # MVAr
 
 # Line data  (typical 230 kV overhead line per-km values)
@@ -92,6 +92,37 @@ LINES = [
     ("L3-4",  "Bus 3", "Bus 4",  70),
     ("L4-1",  "Bus 4", "Bus 1",  50),
 ]
+
+
+def load_profile(hours: int) -> dict:
+    """
+    Generate realistic 24-hour load profiles for both load buses.
+
+    Returns a dict with keys 'bus2' and 'bus4', each an ndarray of
+    MW values.  Daily mean equals the base MW constant.
+
+    Bus 4 – City:  dual-peak (morning + evening), overnight trough.
+    Bus 2 – Industrial:  flat weekday, ramp up/down at shift changes.
+    """
+    t = np.arange(hours, dtype=float)
+
+    # City / residential (Bus 4)
+    city = (0.85
+            + 0.10 * np.sin(np.pi * (t - 5) / 12)
+            + 0.12 * np.exp(-0.5 * ((t - 19) / 1.8)**2)
+            - 0.15 * np.exp(-0.5 * ((t - 3) / 2.5)**2))
+    city = city / city.mean()
+    city_mw = LOAD_BUS4_P * city
+
+    # Industrial (Bus 2)
+    ind = (0.90
+           + 0.12 * np.tanh((t - 6.5) / 1.0)
+           - 0.12 * np.tanh((t - 20) / 1.5)
+           - 0.08 * np.exp(-0.5 * ((t - 3) / 2.0)**2))
+    ind = ind / ind.mean()
+    ind_mw = LOAD_BUS2_P * ind
+
+    return {"bus2": ind_mw, "bus4": city_mw}
 
 
 def wind_profile(hours: int) -> np.ndarray:
@@ -155,11 +186,12 @@ def build_network():
           marginal_cost=WIND_COST,        # free fuel
           carrier="wind")
 
-    # --- loads ---
+    # --- loads (time-varying) ---
+    lp = load_profile(HOURS)
     n.add("Load", "City Load (Bus 4)",
-          bus="Bus 4", p_set=LOAD_BUS4_P, q_set=LOAD_BUS4_Q)
+          bus="Bus 4", p_set=lp["bus4"], q_set=LOAD_BUS4_Q)
     n.add("Load", "Industrial Load (Bus 2)",
-          bus="Bus 2", p_set=LOAD_BUS2_P, q_set=LOAD_BUS2_Q)
+          bus="Bus 2", p_set=lp["bus2"], q_set=LOAD_BUS2_Q)
 
     # --- transmission lines ---
     for name, b0, b1, km in LINES:
@@ -347,7 +379,10 @@ if __name__ == "__main__":
           f"{len(net.loads)} loads, {len(net.lines)} lines")
     print(f"Snapshots: {HOURS} hours")
     print(f"Wind farm rated: {WIND_PNOM} MW  |  Conv rated: {CONV_PNOM} MW")
-    print(f"Total load: {LOAD_BUS2_P + LOAD_BUS4_P} MW (constant)")
+    lp = load_profile(HOURS)
+    print(f"Total load: {LOAD_BUS2_P + LOAD_BUS4_P} MW avg  "
+          f"(varies {lp['bus2'].min() + lp['bus4'].min():.1f} – "
+          f"{lp['bus2'].max() + lp['bus4'].max():.1f} MW)")
 
     # Wind profile preview
     cf = wind_profile(HOURS)
