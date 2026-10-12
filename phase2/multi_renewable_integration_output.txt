@@ -1,12 +1,12 @@
 INFO:linopy.model: Solve problem using Highs solver
-INFO:linopy.io: Writing time: 0.05s
+INFO:linopy.io: Writing time: 0.04s
 INFO:linopy.constants: Optimization successful: 
 Status: ok
 Termination condition: optimal
 Solution: 240 primals, 648 duals
-Objective: 1.24e+05
+Objective: 1.30e+05
 Solver: highs
-Runtime: 0.00s
+Runtime: 0.01s
 MIP gap: inf
 Dual bound: 0.00e+00
 Solver model: available
@@ -14,10 +14,10 @@ Solver message: Optimal
 
 Running HiGHS 1.15.1 (git hash: 04024d7): Copyright (c) 2026 under MIT licence terms
 Includes third-party software components, see THIRD_PARTY_NOTICES.md for full details
-LP linopy-problem-rk3fd_ze has 648 rows; 240 cols; 1032 nonzeros
+LP linopy-problem-opw4o7ud has 648 rows; 240 cols; 1032 nonzeros
 Coefficient ranges:
   Matrix  [1e+00, 5e+01]
-  Cost    [5e+00, 4e+01]
+  Cost    [3e+00, 4e+01]
   Bound   [0e+00, 0e+00]
   RHS     [5e+00, 2e+02]
 Presolving model
@@ -29,18 +29,18 @@ Presolve reductions: rows 139(-509); columns 196(-44); nonzeros 456(-576)
 Solving the presolved LP
 Using dual simplex solver
   Iteration        Objective     Infeasibilities num(sum)
-          0     1.1689986755e+04 Pr: 126(121878) 0.0s
-        139     1.2415092116e+05 Pr: 0(0) 0.0s
+          0     1.2061465322e+04 Pr: 126(121878) 0.0s
+        139     1.3020234378e+05 Pr: 0(0) 0.0s
 
 Performed postsolve
 Solving the original LP from the solution after postsolve
 
-Model name          : linopy-problem-rk3fd_ze
+Model name          : linopy-problem-opw4o7ud
 Model status        : Optimal
 Simplex   iterations: 139
-Objective value     :  1.2415092116e+05
-P-D objective error :  0.0000000000e+00
-HiGHS run time      :          0.00
+Objective value     :  1.3020234378e+05
+P-D objective error :  1.6764513131e-16
+HiGHS run time      :          0.01
 ======================================================================
   Multi-Renewable Integration Study - 5-Bus System (PyPSA OPF)
   Sources: Solar PV + Wind + Small Hydro
@@ -51,9 +51,9 @@ Snapshots: 24 hours
 
 Generation capacity:
   Conventional :    200 MW  ($45.0/MWh)
-  Solar PV     :     80 MWp ($0/MWh)
-  Wind Farm    :    100 MW  ($0/MWh)
-  Small Hydro  :     20 MW  ($5.0/MWh)
+  Wind Farm    :    100 MW  ($3.0/MWh)
+  Solar PV     :     80 MWp ($5.0/MWh)
+  Small Hydro  :     20 MW  ($8.0/MWh)
   Total RE cap : 200 MW
 
 Total load: 185.0 MW avg  (varies 146.0 – 208.1 MW)
@@ -120,9 +120,14 @@ Hour
     Wind  : 38.9%
     Hydro : 70.0%
 
-  System cost (fuel + O&M) : $124,151
-  All-conventional cost   : $199,800
-  Savings from renewables : $75,649
+--- Economic Summary (24 h) ---
+  Conventional cost ($45.0/MWh) : $122,471  (94.1%)
+  Wind farm O&M cost ($3.0/MWh) : $2,803  (2.2%)
+  Solar PV O&M cost ($5.0/MWh) : $2,240  (1.7%)
+  Small Hydro cost ($8.0/MWh)  : $2,688  (2.1%)
+  Total system operating cost   : $130,202
+  Without renewables (all conv) : $199,800
+  Net savings from renewables   : $69,598  (34.8% reduction)
 
 --- Peak Line Flows ---
       Peak_MW  S_nom_MVA  Loading_%  Length_km

@@ -4,7 +4,7 @@ INFO:linopy.constants: Optimization successful:
 Status: ok
 Termination condition: optimal
 Solution: 144 primals, 408 duals
-Objective: 1.16e+05
+Objective: 1.19e+05
 Solver: highs
 Runtime: 0.00s
 MIP gap: inf
@@ -14,10 +14,10 @@ Solver message: Optimal
 
 Running HiGHS 1.15.1 (git hash: 04024d7): Copyright (c) 2026 under MIT licence terms
 Includes third-party software components, see THIRD_PARTY_NOTICES.md for full details
-LP linopy-problem-38z7_8b0 has 408 rows; 144 cols; 624 nonzeros
+LP linopy-problem-5r2zb1aj has 408 rows; 144 cols; 624 nonzeros
 Coefficient ranges:
   Matrix  [1e+00, 5e+01]
-  Cost    [4e+01, 4e+01]
+  Cost    [3e+00, 4e+01]
   Bound   [0e+00, 0e+00]
   RHS     [8e+00, 2e+02]
 Presolving model
@@ -27,10 +27,10 @@ Presolve reductions: rows 0(-408); columns 0(-144); nonzeros 0(-624) - Reduced t
 Performed postsolve
 Solving the original LP from the solution after postsolve
 
-Model name          : linopy-problem-38z7_8b0
+Model name          : linopy-problem-5r2zb1aj
 Model status        : Optimal
-Objective value     :  1.1622605500e+05
-P-D objective error :  6.2601508015e-17
+Objective value     :  1.1902910087e+05
+P-D objective error :  1.2225459148e-16
 HiGHS run time      :          0.00
 ==============================================================
    Wind Energy Integration Study - 4-Bus System (PyPSA OPF)
@@ -38,7 +38,7 @@ HiGHS run time      :          0.00
 
 Network: 4 buses, 2 generators, 2 loads, 4 lines
 Snapshots: 24 hours
-Wind farm rated: 100.0 MW  |  Conv rated: 200.0 MW
+Wind farm rated: 100.0 MW ($3.0/MWh)  |  Conv rated: 200.0 MW ($40.0/MWh)
 Total load: 160.0 MW avg  (varies 124.9 – 180.6 MW)
 
 Wind capacity factor range: 0.08 - 0.63
@@ -97,9 +97,12 @@ Hour
 
   Wind capacity factor : 38.9%
 
-  Fuel cost (conventional only) : $116,226
-  Without wind (all conv)      : $153,600
-  Savings from wind            : $37,374
+--- Economic Summary (24 h) ---
+  Conventional cost ($40.0/MWh) : $116,226  (97.6%)
+  Wind farm O&M cost ($3.0/MWh) : $2,803  (2.4%)
+  Total system operating cost   : $119,029
+  Without wind (all conv)       : $153,600
+  Net savings from wind farm    : $34,571  (22.5% reduction)
 
 --- Peak Line Flows ---
       Peak_MW  S_nom_MVA  Loading_%  Length_km
