@@ -1,5 +1,5 @@
 INFO:linopy.model: Solve problem using Highs solver
-INFO:linopy.io: Writing time: 0.09s
+INFO:linopy.io: Writing time: 0.06s
 INFO:linopy.constants: Optimization successful: 
 Status: ok
 Termination condition: optimal
@@ -14,7 +14,7 @@ Solver message: Optimal
 
 Running HiGHS 1.15.1 (git hash: 04024d7): Copyright (c) 2026 under MIT licence terms
 Includes third-party software components, see THIRD_PARTY_NOTICES.md for full details
-LP linopy-problem-zkmisqoy has 408 rows; 144 cols; 624 nonzeros
+LP linopy-problem-38z7_8b0 has 408 rows; 144 cols; 624 nonzeros
 Coefficient ranges:
   Matrix  [1e+00, 5e+01]
   Cost    [4e+01, 4e+01]
@@ -27,7 +27,7 @@ Presolve reductions: rows 0(-408); columns 0(-144); nonzeros 0(-624) - Reduced t
 Performed postsolve
 Solving the original LP from the solution after postsolve
 
-Model name          : linopy-problem-zkmisqoy
+Model name          : linopy-problem-38z7_8b0
 Model status        : Optimal
 Objective value     :  1.1622605500e+05
 P-D objective error :  6.2601508015e-17
@@ -45,7 +45,20 @@ Wind capacity factor range: 0.08 - 0.63
 Wind daily average CF: 0.39
 
 --- Running 24-hour Linear OPF ---
-OPF status: ok, solver condition: optimal
+
+========================================================================
+  NUMERICAL METHOD & OPTIMIZATION SOLVER DETAILS
+========================================================================
+  Formulation            : 24-Hour Multi-Period Linear Optimal Power Flow (DC-OPF)
+  Optimization Problem   : Continuous Linear Program (LP)
+  PyPSA Optimization API : Linopy frontend -> HiGHS solver backend
+  Numerical Method       : Revised Dual Simplex Method / Presolve Reductions
+  Simplex Iterations     : 0 iterations (solution obtained)
+  Presolve Status        : HighsPresolveStatus.kReducedToEmpty
+  Solver Model Status    : Optimal
+  Optimization Status    : ok, solver condition: optimal
+========================================================================
+
 
 ========================================================================
   24-HOUR DISPATCH TABLE  -  4-Bus Wind Integration Study

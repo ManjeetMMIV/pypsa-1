@@ -19,6 +19,7 @@ Frequency (60 Hz) does not enter the power flow when impedances are in ohm/sieme
 """
 import logging
 import warnings
+import re
 import numpy as np
 import pandas as pd
 import pypsa
@@ -27,6 +28,22 @@ logging.getLogger("pypsa").setLevel(logging.WARNING)
 warnings.filterwarnings("ignore", category=FutureWarning)
 pd.set_option("display.float_format", "{:.4f}".format)
 pd.set_option("display.width", 140)
+
+
+class NRIterationTracker(logging.Handler):
+    """Captures maximum power mismatch at each Newton-Raphson iteration from PyPSA's internal solver."""
+    def __init__(self):
+        super().__init__()
+        self.history = []
+
+    def emit(self, record):
+        m = re.search(r"Error at iteration (\d+):\s*([0-9.eE+-]+)", record.getMessage())
+        if m:
+            it = int(m.group(1))
+            err = float(m.group(2))
+            if not self.history or self.history[-1][0] != it:
+                self.history.append((it, err))
+
 
 # ------------------------------------------------------------------ settings
 LOAD_MODEL = "constant_z"   # "constant_z" reproduces the Simulink diagram
@@ -92,11 +109,43 @@ def build_network():
 
 
 def run_pf(n, label):
-    info = n.pf()
+    tracker = NRIterationTracker()
+    pf_logger = logging.getLogger("pypsa.network.power_flow")
+    old_level = pf_logger.level
+    old_prop = pf_logger.propagate
+    pf_logger.setLevel(logging.DEBUG)
+    pf_logger.propagate = False
+    pf_logger.addHandler(tracker)
+
+    try:
+        info = n.pf()
+    finally:
+        pf_logger.removeHandler(tracker)
+        pf_logger.setLevel(old_level)
+        pf_logger.propagate = old_prop
+
     ok = bool(info.converged.all().all())
     it = int(info.n_iter.max().max())
-    print(f"[{label}] converged = {ok}, Newton-Raphson iterations = {it}")
+    err = float(info.error.iloc[0, 0])
+
+    print("\n" + "=" * 70)
+    print(f"  [{label}] AC POWER FLOW NUMERICAL METHOD & CONVERGENCE")
+    print("=" * 70)
+    print("Numerical Method       : Full AC Newton-Raphson Method")
+    print("Mathematical Model     : Non-linear AC Nodal Power Balance (P-Q mismatch)")
+    print("Jacobian Linear Solver : scipy.sparse.linalg.spsolve (SuperLU)")
+    print("Mismatch Tolerance     : 1.00e-06 pu (x_tol)")
+    print(f"Convergence Status     : {'CONVERGED' if ok else 'FAILED'}")
+    print(f"Convergence Iteration  : Iteration {it} (solution obtained)")
+    print(f"Final Mismatch Error   : {err:.4e} pu")
+    if tracker.history:
+        print("\n--- Newton-Raphson Iteration Progress ---")
+        for step, mismatch in tracker.history:
+            tag = f"  <-- Solved & CONVERGED at iteration {step}" if step == it else ""
+            print(f"  Iteration {step:2d} : Max Mismatch = {mismatch:12.6f} MVA{tag}")
+    print("=" * 70 + "\n")
     return ok
+
 
 
 def load_pq(n, snap):
