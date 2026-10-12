@@ -1,41 +1,38 @@
 # -*- coding: utf-8 -*-
 """
-Multi-Renewable Integration Study – 5-Bus System in PyPSA
+Multi-Renewable Integration Study - 5-Bus System in PyPSA
 ==========================================================
 
 A comprehensive demonstration of integrating MULTIPLE renewable energy
-sources alongside a conventional generator, with battery storage to
-manage variability.  Uses 24-hour Optimal Power Flow (linear OPF).
+sources alongside a conventional generator.
+Uses 24-hour Optimal Power Flow (linear OPF).
 
 System topology (5-bus ring with cross-link)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-            Bus 1 ────────── Bus 2
+            Bus 1 ---------- Bus 2
           (Conv 200MW)     (Solar 80MWp + Load 60MW)
              |    /             |
              |   /              |
           Bus 5  /           Bus 3
      (Hydro 20MW    \     (Wind 100MW)
-      + Load 25MW)   \       │
-             │         \     │
-          Bus 4 ────────── Bus 3
-     (Battery 30MW/120MWh
-      + City Load 100MW)
+      + Load 25MW)   \       |
+             |         \     |
+          Bus 4 ---------- Bus 3
+     (City Load 100MW)
 
 Renewable sources modelled:
-  1. Solar PV (80 MWp)     – bell-shaped daytime profile
-  2. Wind Farm (100 MW)    – variable day+night, stronger at night
-  3. Small Hydro (20 MW)   – steady run-of-river, seasonal variation
-  4. Battery (30 MW, 4h)   – charges when RE surplus, discharges at peak
+  1. Solar PV (80 MWp)     - bell-shaped daytime profile
+  2. Wind Farm (100 MW)    - variable day+night, stronger at night
+  3. Small Hydro (20 MW)   - steady run-of-river, seasonal variation
 
 The script:
   1.  Builds the 5-bus network with all sources.
   2.  Runs 24-hour linear OPF to find least-cost dispatch.
   3.  Prints hour-by-hour dispatch with renewable penetration %.
-  4.  Shows battery charge/discharge schedule.
-  5.  Saves six publication-quality plots.
+  4.  Saves six publication-quality plots.
 
-Author:  PSModel – Phase 2
+Author:  PSModel - Phase 2
 Date:    October 2026
 """
 
@@ -78,10 +75,6 @@ WIND_COST     = 0.0     # $/MWh
 HYDRO_PNOM    = 20.0    # MW  – small run-of-river hydro
 HYDRO_COST    = 5.0     # $/MWh – O&M only (water is free)
 
-# ---- Battery storage ----
-BATT_PNOM     = 30.0    # MW  charge / discharge rate
-BATT_HOURS    = 4       # hours of storage -> 120 MWh
-BATT_EFF      = 0.92    # round-trip sqrt -> charge & discharge efficiency
 
 # ---- Loads (constant for clarity) ----
 LOAD_BUS2_P   = 60.0    # MW – industrial
@@ -181,16 +174,6 @@ def build_network():
           p_max_pu=hydro_profile(HOURS),
           marginal_cost=HYDRO_COST, carrier="hydro")
 
-    # --- battery storage at Bus 4 ---
-    n.add("StorageUnit", "Battery (Bus 4)",
-          bus="Bus 4",
-          p_nom=BATT_PNOM,
-          max_hours=BATT_HOURS,           # 30 MW x 4h = 120 MWh
-          efficiency_store=np.sqrt(BATT_EFF),
-          efficiency_dispatch=np.sqrt(BATT_EFF),
-          cyclic_state_of_charge=True,     # SoC at hour 0 = SoC at hour 23
-          marginal_cost=1.0,               # small cost to avoid unnecessary cycling
-          carrier="battery")
 
     # --- loads ---
     n.add("Load", "Industrial (Bus 2)",
@@ -235,7 +218,6 @@ def run_opf(n):
 
 def print_dispatch_table(n):
     gen_p = n.generators_t.p
-    stor  = n.storage_units_t.p  # positive = discharge, negative = charge
     total_load = n.loads_t.p.sum(axis=1)
 
     tbl = pd.DataFrame({
@@ -244,7 +226,6 @@ def print_dispatch_table(n):
         "Solar_MW": gen_p["Solar PV (Bus 2)"].values,
         "Wind_MW":  gen_p["Wind Farm (Bus 3)"].values,
         "Hydro_MW": gen_p["Small Hydro (Bus 5)"].values,
-        "Batt_MW":  stor["Battery (Bus 4)"].values,
         "Load_MW":  total_load.values,
     })
     tbl["RE_MW"]  = tbl.Solar_MW + tbl.Wind_MW + tbl.Hydro_MW
@@ -252,7 +233,7 @@ def print_dispatch_table(n):
     tbl = tbl.set_index("Hour")
 
     print("\n" + "=" * 100)
-    print("  24-HOUR DISPATCH TABLE  -  Multi-Renewable Integration (Solar + Wind + Hydro + Battery)")
+    print("  24-HOUR DISPATCH TABLE  -  Multi-Renewable Integration (Solar + Wind + Hydro)")
     print("=" * 100)
     print(tbl.to_string())
 
@@ -262,10 +243,7 @@ def print_dispatch_table(n):
     wind_e  = tbl.Wind_MW.sum()
     hydro_e = tbl.Hydro_MW.sum()
     re_e    = solar_e + wind_e + hydro_e
-    total_e = conv_e + re_e  # battery is net-zero over 24h (cyclic)
-
-    batt_charge    = tbl.Batt_MW[tbl.Batt_MW < 0].sum()    # MWh absorbed
-    batt_discharge = tbl.Batt_MW[tbl.Batt_MW > 0].sum()    # MWh delivered
+    total_e = conv_e + re_e
 
     print("\n" + "-" * 50)
     print("  ENERGY SUMMARY (24 hours)")
@@ -277,8 +255,6 @@ def print_dispatch_table(n):
     print(f"  ----------------------------------------")
     print(f"  Total RE     : {re_e:8.1f} MWh  ({100*re_e/total_e:.1f}%)")
     print(f"  Total Gen    : {total_e:8.1f} MWh")
-    print(f"\n  Battery charged  : {abs(batt_charge):8.1f} MWh")
-    print(f"  Battery discharged: {batt_discharge:8.1f} MWh")
 
     # --- capacity factors ---
     print(f"\n  Capacity Factors:")
@@ -312,14 +288,12 @@ def plot_results(n, tbl):
     solar = gen_p["Solar PV (Bus 2)"].values
     wind  = gen_p["Wind Farm (Bus 3)"].values
     hydro = gen_p["Small Hydro (Bus 5)"].values
-    batt  = n.storage_units_t.p["Battery (Bus 4)"].values
-    soc   = n.storage_units_t.state_of_charge["Battery (Bus 4)"].values
 
     fig, axes = plt.subplots(2, 3, figsize=(18, 10))
     fig.suptitle("Multi-Renewable Integration - 5-Bus System (24-Hour OPF)",
                  fontsize=16, fontweight="bold", y=0.99)
 
-    # ── 1. Stacked generation dispatch ────────────────────────────────
+    # -- 1. Stacked generation dispatch --------------------------------
     ax = axes[0, 0]
     y1 = hydro
     y2 = y1 + solar
@@ -329,9 +303,6 @@ def plot_results(n, tbl):
     ax.fill_between(hours, y1, y2, color="#f5a623", alpha=0.85, label="Solar")
     ax.fill_between(hours, y2, y3, color="#2ecc71", alpha=0.85, label="Wind")
     ax.fill_between(hours, y3, y4, color="#7f8c8d", alpha=0.85, label="Conventional")
-    # Battery discharge shown as stacked on top
-    batt_pos = np.maximum(batt, 0)
-    ax.fill_between(hours, y4, y4 + batt_pos, color="#9b59b6", alpha=0.85, label="Battery (discharge)")
     total_load = n.loads_t.p.sum(axis=1).values
     ax.plot(hours, total_load, "k--", lw=2, label="Total Load")
     ax.set_xlabel("Hour of Day")
@@ -342,7 +313,7 @@ def plot_results(n, tbl):
     ax.xaxis.set_major_locator(MaxNLocator(integer=True))
     ax.grid(True, alpha=0.3)
 
-    # ── 2. Individual RE profiles ─────────────────────────────────────
+    # -- 2. Individual RE profiles -------------------------------------
     ax = axes[0, 1]
     ax.plot(hours, solar, "o-", color="#f5a623", ms=4, lw=1.5, label=f"Solar ({solar.sum():.0f} MWh)")
     ax.plot(hours, wind,  "s-", color="#2ecc71", ms=4, lw=1.5, label=f"Wind ({wind.sum():.0f} MWh)")
@@ -357,25 +328,30 @@ def plot_results(n, tbl):
     ax.xaxis.set_major_locator(MaxNLocator(integer=True))
     ax.grid(True, alpha=0.3)
 
-    # ── 3. Battery operation ──────────────────────────────────────────
+    # -- 3. Cost breakdown (replaces battery plot) ---------------------
     ax = axes[0, 2]
-    colors_batt = ["#9b59b6" if b >= 0 else "#e74c3c" for b in batt]
-    ax.bar(hours, batt, color=colors_batt, alpha=0.8, width=0.7)
-    ax.axhline(0, color="black", lw=0.8)
-    ax.set_xlabel("Hour of Day")
-    ax.set_ylabel("Power (MW)")
-    ax.set_title("Battery: Charge (-) / Discharge (+)")
-    ax.set_xlim(-0.5, 23.5)
-    ax.xaxis.set_major_locator(MaxNLocator(integer=True))
-    ax.grid(True, alpha=0.3)
-    # SoC on secondary axis
-    ax2 = ax.twinx()
-    ax2.plot(hours, soc, "k-", lw=2, marker="D", ms=3, label="SoC (MWh)")
-    ax2.set_ylabel("State of Charge (MWh)")
-    ax2.set_ylim(0, BATT_PNOM * BATT_HOURS * 1.1)
-    ax2.legend(loc="upper right", fontsize=8)
+    conv_e  = conv.sum()
+    solar_e = solar.sum()
+    wind_e  = wind.sum()
+    hydro_e = hydro.sum()
+    total_e = conv_e + solar_e + wind_e + hydro_e
+    conv_cost  = conv_e * CONV_COST
+    hydro_cost = hydro_e * HYDRO_COST
+    actual_cost = conv_cost + hydro_cost
+    all_conv_cost = total_e * CONV_COST
+    savings = all_conv_cost - actual_cost
+    bars = ax.bar(["System\nCost", "All-Conv\nCost", "Savings"],
+                  [actual_cost, all_conv_cost, savings],
+                  color=["#2ecc71", "#e74c3c", "#3498db"], alpha=0.85, width=0.55)
+    for bar in bars:
+        h = bar.get_height()
+        ax.text(bar.get_x() + bar.get_width() / 2, h + all_conv_cost * 0.01,
+                f"${h:,.0f}", ha="center", va="bottom", fontsize=9, fontweight="bold")
+    ax.set_ylabel("Cost ($)")
+    ax.set_title("24-Hour Cost Comparison")
+    ax.grid(True, alpha=0.3, axis="y")
 
-    # ── 4. Renewable penetration % ────────────────────────────────────
+    # -- 4. Renewable penetration % ------------------------------------
     ax = axes[1, 0]
     re_pct = tbl["RE_%"].values
     ax.fill_between(hours, 0, re_pct, color="#27ae60", alpha=0.4)
@@ -391,7 +367,7 @@ def plot_results(n, tbl):
     ax.xaxis.set_major_locator(MaxNLocator(integer=True))
     ax.grid(True, alpha=0.3)
 
-    # ── 5. Line loading ───────────────────────────────────────────────
+    # -- 5. Line loading -----------------------------------------------
     ax = axes[1, 1]
     line_loading = n.lines_t.p0.abs()
     for col in line_loading.columns:
@@ -408,7 +384,7 @@ def plot_results(n, tbl):
     ax.xaxis.set_major_locator(MaxNLocator(integer=True))
     ax.grid(True, alpha=0.3)
 
-    # ── 6. Energy mix pie chart ───────────────────────────────────────
+    # -- 6. Energy mix pie chart ---------------------------------------
     ax = axes[1, 2]
     energies = [conv.sum(), solar.sum(), wind.sum(), hydro.sum()]
     labels   = [f"Conv.\n{energies[0]:.0f} MWh",
@@ -425,7 +401,8 @@ def plot_results(n, tbl):
     ax.set_title("24-Hour Energy Mix")
 
     plt.tight_layout(rect=[0, 0, 1, 0.96])
-    out = r"d:\psmodel\phase2\multi_renewable_results.png"
+    import os
+    out = os.path.join(os.path.dirname(os.path.abspath(__file__)), "multi_renewable_results.png")
     plt.savefig(out, dpi=180, bbox_inches="tight")
     print(f"\n-> Plots saved: {out}")
     plt.show(block=False)
@@ -439,21 +416,19 @@ def plot_results(n, tbl):
 if __name__ == "__main__":
     print("=" * 70)
     print("  Multi-Renewable Integration Study - 5-Bus System (PyPSA OPF)")
-    print("  Sources: Solar PV + Wind + Small Hydro + Battery Storage")
+    print("  Sources: Solar PV + Wind + Small Hydro")
     print("=" * 70)
 
     # Build
     net = build_network()
     print(f"\nNetwork: {len(net.buses)} buses, {len(net.generators)} generators, "
-          f"{len(net.storage_units)} storage units, {len(net.loads)} loads, "
-          f"{len(net.lines)} lines")
+          f"{len(net.loads)} loads, {len(net.lines)} lines")
     print(f"Snapshots: {HOURS} hours")
     print(f"\nGeneration capacity:")
     print(f"  Conventional : {CONV_PNOM:6.0f} MW  (${CONV_COST}/MWh)")
     print(f"  Solar PV     : {SOLAR_PNOM:6.0f} MWp ($0/MWh)")
     print(f"  Wind Farm    : {WIND_PNOM:6.0f} MW  ($0/MWh)")
     print(f"  Small Hydro  : {HYDRO_PNOM:6.0f} MW  (${HYDRO_COST}/MWh)")
-    print(f"  Battery      : {BATT_PNOM:6.0f} MW / {BATT_PNOM*BATT_HOURS:.0f} MWh")
     print(f"  Total RE cap : {SOLAR_PNOM + WIND_PNOM + HYDRO_PNOM:.0f} MW")
     print(f"\nTotal load: {TOTAL_LOAD} MW (constant)")
 
