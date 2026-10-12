@@ -1,23 +1,11 @@
 INFO:linopy.model: Solve problem using Highs solver
-INFO:linopy.io: Writing time: 0.21s
-INFO:linopy.constants: Optimization successful: 
-Status: ok
-Termination condition: optimal
-Solution: 144 primals, 408 duals
-Objective: 1.38e+05
-Solver: highs
-Runtime: 0.01s
-MIP gap: inf
-Dual bound: 0.00e+00
-Solver model: available
-Solver message: Optimal
-
+INFO:linopy.io: Writing time: 0.13s
 Running HiGHS 1.15.1 (git hash: 04024d7): Copyright (c) 2026 under MIT licence terms
 Includes third-party software components, see THIRD_PARTY_NOTICES.md for full details
-LP linopy-problem-gc69xtmm has 408 rows; 144 cols; 624 nonzeros
+LP linopy-problem-uggr9dpm has 408 rows; 144 cols; 624 nonzeros
 Coefficient ranges:
   Matrix  [1e+00, 5e+01]
-  Cost    [5e+00, 4e+01]
+  Cost    [4e+02, 3e+03]
   Bound   [0e+00, 0e+00]
   RHS     [5e+00, 2e+02]
 Presolving model
@@ -27,84 +15,96 @@ Presolve reductions: rows 0(-408); columns 0(-144); nonzeros 0(-624) - Reduced t
 Performed postsolve
 Solving the original LP from the solution after postsolve
 
-Model name          : linopy-problem-gc69xtmm
+Model name          : linopy-problem-uggr9dpm
 Model status        : Optimal
-Objective value     :  1.3791736278e+05
-P-D objective error :  2.1102292242e-16
-HiGHS run time      :          0.01
-╔══════════════════════════════════════════════════════════════╗
-║   Solar PV Integration Study – 4-Bus System (PyPSA OPF)   ║
-╚══════════════════════════════════════════════════════════════╝
-
-Network: 4 buses, 2 generators, 2 loads, 4 lines
-Snapshots: 24 hours
-Solar PV rated: 80.0 MWp ($5.0/MWh)  |  Conv rated: 200.0 MW ($40.0/MWh)
-Total load: 160.0 MW avg  (varies 124.9 – 180.6 MW)
-
---- Running 24-hour Linear OPF ---
-
-========================================================================
-  NUMERICAL METHOD & OPTIMIZATION SOLVER DETAILS
-========================================================================
-  Formulation            : 24-Hour Multi-Period Linear Optimal Power Flow (DC-OPF)
-  Optimization Problem   : Continuous Linear Program (LP)
-  PyPSA Optimization API : Linopy frontend -> HiGHS solver backend
-  Numerical Method       : Revised Dual Simplex Method / Presolve Reductions
-  Simplex Iterations     : 0 iterations (solution obtained)
-  Presolve Status        : HighsPresolveStatus.kReducedToEmpty
-  Solver Model Status    : Optimal
-  Optimization Status    : ok, solver condition: optimal
-========================================================================
-
-
-========================================================================
-  24-HOUR DISPATCH TABLE  –  4-Bus Solar Integration Study
-========================================================================
-      Conv_MW  Solar_MW  Total_Gen_MW  Total_Load_MW  Solar_%
-Hour                                                         
-0      132.82     -0.00        132.82         132.82    -0.00
-1      128.39     -0.00        128.39         128.39    -0.00
-2      125.46     -0.00        125.46         125.46    -0.00
-3      126.02     -0.00        126.02         126.02    -0.00
-4      130.92     -0.00        130.92         130.92    -0.00
-5      139.42     -0.00        139.42         139.42    -0.00
-6      145.86      5.41        151.27         151.27     3.58
-7      153.59     11.72        165.32         165.32     7.09
-8      151.84     22.08        173.91         173.91    12.69
-9      141.85     36.11        177.96         177.96    20.29
-10     128.60     51.33        179.93         179.93    28.53
-11     117.23     63.38        180.61         180.61    35.09
-12     112.29     68.00        180.29         180.29    37.72
-13     115.78     63.38        179.17         179.17    35.38
-14     126.18     51.33        177.51         177.51    28.92
-15     139.82     36.11        175.94         175.94    20.53
-16     153.29     22.08        175.37         175.37    12.59
-17     164.52     11.72        176.25         176.25     6.65
-18     171.64      5.41        177.05         177.05     3.06
-19     174.18     -0.00        174.18         174.18    -0.00
-20     165.54     -0.00        165.54         165.54    -0.00
-21     154.96     -0.00        154.96         154.96    -0.00
-22     147.58     -0.00        147.58         147.58    -0.00
-23     144.14     -0.00        144.14         144.14    -0.00
-
---- Energy Summary (24 h) ---
-  Conventional :   3391.9 MWh  (88.3%)
-  Solar PV     :    448.1 MWh  (11.7%)
-  Total        :   3840.0 MWh
-
---- Economic Summary (24 h) ---
-  Conventional cost ($40.0/MWh) : $135,677  (98.4%)
-  Solar PV O&M cost ($5.0/MWh) : $2,240  (1.6%)
-  Total system operating cost   : $137,917
-  Without solar (all conv)      : $153,600
-  Net savings from solar PV     : $15,683  (10.2% reduction)
-
---- Peak Line Flows ---
-      Peak_MW  S_nom_MVA  Loading_%  Length_km
-name                                          
-L1-2    65.59     200.00      32.79      80.00
-L2-3    22.03     200.00      11.01      60.00
-L3-4    22.03     200.00      11.01      70.00
-L4-1   108.59     200.00      54.30      50.00
-
-✓ Plots saved → d:\psmodel\phase2\solar_integration_results.png
+Objective value     :  1.1722975836e+07
+P-D objective error :  0.0000000000e+00
+HiGHS run time      :          0.00
+INFO:linopy.constants: Optimization successful: 
+Status: ok
+Termination condition: optimal
+Solution: 144 primals, 408 duals
+Objective: 1.17e+07
+Solver: highs
+Runtime: 0.00s
+MIP gap: inf
+Dual bound: 0.00e+00
+Solver model: available
+Solver message: Optimal
+
+╔══════════════════════════════════════════════════════════════╗
+║   Solar PV Integration Study – 4-Bus System (PyPSA OPF)   ║
+╚══════════════════════════════════════════════════════════════╝
+
+Network: 4 buses, 2 generators, 2 loads, 4 lines
+Snapshots: 24 hours
+Solar PV rated: 80.0 MWp (₹425.0/MWh)  |  Conv rated: 200.0 MW (₹3400.0/MWh)
+Total load: 160.0 MW avg  (varies 124.9 – 180.6 MW)
+
+--- Running 24-hour Linear OPF ---
+
+========================================================================
+  NUMERICAL METHOD & OPTIMIZATION SOLVER DETAILS
+========================================================================
+  Formulation            : 24-Hour Multi-Period Linear Optimal Power Flow (DC-OPF)
+  Optimization Problem   : Continuous Linear Program (LP)
+  PyPSA Optimization API : Linopy frontend -> HiGHS solver backend
+  Numerical Method       : Revised Dual Simplex Method / Presolve Reductions
+  Simplex Iterations     : 0 iterations (solution obtained)
+  Presolve Status        : HighsPresolveStatus.kReducedToEmpty
+  Solver Model Status    : Optimal
+  Optimization Status    : ok, solver condition: optimal
+========================================================================
+
+
+========================================================================
+  24-HOUR DISPATCH TABLE  –  4-Bus Solar Integration Study
+========================================================================
+      Conv_MW  Solar_MW  Total_Gen_MW  Total_Load_MW  Solar_%
+Hour                                                         
+0      132.82     -0.00        132.82         132.82    -0.00
+1      128.39     -0.00        128.39         128.39    -0.00
+2      125.46     -0.00        125.46         125.46    -0.00
+3      126.02     -0.00        126.02         126.02    -0.00
+4      130.92     -0.00        130.92         130.92    -0.00
+5      139.42     -0.00        139.42         139.42    -0.00
+6      145.86      5.41        151.27         151.27     3.58
+7      153.59     11.72        165.32         165.32     7.09
+8      151.84     22.08        173.91         173.91    12.69
+9      141.85     36.11        177.96         177.96    20.29
+10     128.60     51.33        179.93         179.93    28.53
+11     117.23     63.38        180.61         180.61    35.09
+12     112.29     68.00        180.29         180.29    37.72
+13     115.78     63.38        179.17         179.17    35.38
+14     126.18     51.33        177.51         177.51    28.92
+15     139.82     36.11        175.94         175.94    20.53
+16     153.29     22.08        175.37         175.37    12.59
+17     164.52     11.72        176.25         176.25     6.65
+18     171.64      5.41        177.05         177.05     3.06
+19     174.18     -0.00        174.18         174.18    -0.00
+20     165.54     -0.00        165.54         165.54    -0.00
+21     154.96     -0.00        154.96         154.96    -0.00
+22     147.58     -0.00        147.58         147.58    -0.00
+23     144.14     -0.00        144.14         144.14    -0.00
+
+--- Energy Summary (24 h) ---
+  Conventional :   3391.9 MWh  (88.3%)
+  Solar PV     :    448.1 MWh  (11.7%)
+  Total        :   3840.0 MWh
+
+--- Economic Summary (24 h) ---
+  Conventional cost (₹3400.0/MWh) : ₹11,532,544  (98.4%)
+  Solar PV O&M cost (₹425.0/MWh) : ₹190,432  (1.6%)
+  Total system operating cost   : ₹11,722,976
+  Without solar (all conv)      : ₹13,056,000
+  Net savings from solar PV     : ₹1,333,024  (10.2% reduction)
+
+--- Peak Line Flows ---
+      Peak_MW  S_nom_MVA  Loading_%  Length_km
+name                                          
+L1-2    65.59     200.00      32.79      80.00
+L2-3    22.03     200.00      11.01      60.00
+L3-4    22.03     200.00      11.01      70.00
+L4-1   108.59     200.00      54.30      50.00
+
+✓ Plots saved → d:\psmodel\phase2\solar_integration_results.png

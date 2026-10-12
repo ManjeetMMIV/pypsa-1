@@ -1,23 +1,11 @@
 INFO:linopy.model: Solve problem using Highs solver
-INFO:linopy.io: Writing time: 0.04s
-INFO:linopy.constants: Optimization successful: 
-Status: ok
-Termination condition: optimal
-Solution: 240 primals, 648 duals
-Objective: 1.30e+05
-Solver: highs
-Runtime: 0.01s
-MIP gap: inf
-Dual bound: 0.00e+00
-Solver model: available
-Solver message: Optimal
-
+INFO:linopy.io: Writing time: 0.11s
 Running HiGHS 1.15.1 (git hash: 04024d7): Copyright (c) 2026 under MIT licence terms
 Includes third-party software components, see THIRD_PARTY_NOTICES.md for full details
-LP linopy-problem-opw4o7ud has 648 rows; 240 cols; 1032 nonzeros
+LP linopy-problem-6hh8ok59 has 648 rows; 240 cols; 1032 nonzeros
 Coefficient ranges:
   Matrix  [1e+00, 5e+01]
-  Cost    [3e+00, 4e+01]
+  Cost    [3e+02, 4e+03]
   Bound   [0e+00, 0e+00]
   RHS     [5e+00, 2e+02]
 Presolving model
@@ -29,114 +17,126 @@ Presolve reductions: rows 139(-509); columns 196(-44); nonzeros 456(-576)
 Solving the presolved LP
 Using dual simplex solver
   Iteration        Objective     Infeasibilities num(sum)
-          0     1.2061465322e+04 Pr: 126(121878) 0.0s
-        139     1.3020234378e+05 Pr: 0(0) 0.0s
+          0     1.0188169508e+06 Pr: 126(121878) 0.0s
+        139     1.0999159821e+07 Pr: 0(0) 0.0s
 
 Performed postsolve
 Solving the original LP from the solution after postsolve
 
-Model name          : linopy-problem-opw4o7ud
+Model name          : linopy-problem-6hh8ok59
 Model status        : Optimal
 Simplex   iterations: 139
-Objective value     :  1.3020234378e+05
-P-D objective error :  1.6764513131e-16
+Objective value     :  1.0999159821e+07
+P-D objective error :  8.4672152007e-17
 HiGHS run time      :          0.01
-======================================================================
-  Multi-Renewable Integration Study - 5-Bus System (PyPSA OPF)
-  Sources: Solar PV + Wind + Small Hydro
-======================================================================
-
-Network: 5 buses, 4 generators, 3 loads, 6 lines
-Snapshots: 24 hours
-
-Generation capacity:
-  Conventional :    200 MW  ($45.0/MWh)
-  Wind Farm    :    100 MW  ($3.0/MWh)
-  Solar PV     :     80 MWp ($5.0/MWh)
-  Small Hydro  :     20 MW  ($8.0/MWh)
-  Total RE cap : 200 MW
-
-Total load: 185.0 MW avg  (varies 146.0 – 208.1 MW)
-
---- Running 24-hour Linear OPF ---
-
-========================================================================
-  NUMERICAL METHOD & OPTIMIZATION SOLVER DETAILS
-========================================================================
-  Formulation            : 24-Hour Multi-Period Linear Optimal Power Flow (DC-OPF)
-  Optimization Problem   : Continuous Linear Program (LP)
-  PyPSA Optimization API : Linopy frontend -> HiGHS solver backend
-  Numerical Method       : Revised Dual Simplex Method / Presolve Reductions
-  Simplex Iterations     : 139 iterations (solution obtained)
-  Presolve Status        : HighsPresolveStatus.kReduced
-  Solver Model Status    : Optimal
-  Optimization Status    : ok, solver condition: optimal
-========================================================================
-
-
-====================================================================================================
-  24-HOUR DISPATCH TABLE  -  Multi-Renewable Integration (Solar + Wind + Hydro)
-====================================================================================================
-      Conv_MW  Solar_MW  Wind_MW  Hydro_MW  Load_MW  RE_MW  RE_%
-Hour                                                            
-0       88.67     -0.00    51.58     14.00   154.25  65.58 42.51
-1       91.76     -0.00    44.00     13.74   149.50  57.74 38.62
-2       72.70     -0.00    60.32     13.50   146.52  73.82 50.38
-3       71.57     -0.00    62.52     13.29   147.39  75.82 51.44
-4      101.14     -0.00    38.71     13.13   152.98  51.84 33.89
-5      107.54     -0.00    41.90     13.03   162.48  54.94 33.81
-6      106.88      5.41    50.16     13.00   175.45  68.57 39.08
-7      123.37     11.72    42.47     13.03   190.59  67.23 35.27
-8      124.86     22.08    40.04     13.13   200.11  75.25 37.60
-9      127.26     36.11    28.18     13.29   204.84  77.58 37.87
-10     105.54     51.33    36.86     13.50   207.23 101.69 49.07
-11      99.74     63.38    31.22     13.74   208.09 108.35 52.07
-12     104.36     68.00    21.39     14.00   207.75 103.39 49.77
-13     102.10     63.38    26.70     14.26   206.44 104.34 50.54
-14     119.26     51.33    19.42     14.50   204.51  85.25 41.69
-15     143.73     36.11     8.13     14.71   202.68  58.95 29.08
-16     146.42     22.08    18.63     14.87   201.99  55.57 27.51
-17     156.22     11.72    20.01     14.97   202.92  46.70 23.01
-18     137.46      5.41    45.89     15.00   203.76  66.30 32.54
-19     136.05     -0.00    49.60     14.97   200.62  64.57 32.18
-20     126.03     -0.00    50.34     14.87   191.24  65.21 34.10
-21     120.43     -0.00    44.55     14.71   179.69  59.26 32.98
-22      98.99     -0.00    57.96     14.50   171.44  72.46 42.26
-23     109.48     -0.00    43.76     14.26   167.51  58.02 34.64
-
---------------------------------------------------
-  ENERGY SUMMARY (24 hours)
---------------------------------------------------
-  Conventional :   2721.6 MWh  (61.3%)
-  Solar PV     :    448.1 MWh  (10.1%)
-  Wind         :    934.3 MWh  (21.0%)
-  Small Hydro  :    336.0 MWh  (7.6%)
-  ----------------------------------------
-  Total RE     :   1718.4 MWh  (38.7%)
-  Total Gen    :   4440.0 MWh
-
-  Capacity Factors:
-    Solar : 23.3%
-    Wind  : 38.9%
-    Hydro : 70.0%
-
---- Economic Summary (24 h) ---
-  Conventional cost ($45.0/MWh) : $122,471  (94.1%)
-  Wind farm O&M cost ($3.0/MWh) : $2,803  (2.2%)
-  Solar PV O&M cost ($5.0/MWh) : $2,240  (1.7%)
-  Small Hydro cost ($8.0/MWh)  : $2,688  (2.1%)
-  Total system operating cost   : $130,202
-  Without renewables (all conv) : $199,800
-  Net savings from renewables   : $69,598  (34.8% reduction)
-
---- Peak Line Flows ---
-      Peak_MW  S_nom_MVA  Loading_%  Length_km
-name                                          
-L1-2    49.47     200.00      24.74      80.00
-L2-3    28.81     200.00      14.40      60.00
-L3-4    37.40     200.00      18.70      70.00
-L4-5    43.70     200.00      21.85      55.00
-L5-1    55.41     200.00      27.71      40.00
-L1-4    51.34     200.00      25.67      90.00
-
--> Plots saved: d:\psmodel\phase2\multi_renewable_results.png
+INFO:linopy.constants: Optimization successful: 
+Status: ok
+Termination condition: optimal
+Solution: 240 primals, 648 duals
+Objective: 1.10e+07
+Solver: highs
+Runtime: 0.01s
+MIP gap: inf
+Dual bound: 0.00e+00
+Solver model: available
+Solver message: Optimal
+
+======================================================================
+  Multi-Renewable Integration Study - 5-Bus System (PyPSA OPF)
+  Sources: Solar PV + Wind + Small Hydro
+======================================================================
+
+Network: 5 buses, 4 generators, 3 loads, 6 lines
+Snapshots: 24 hours
+
+Generation capacity:
+  Conventional :    200 MW  (₹3800.0/MWh)
+  Wind Farm    :    100 MW  (₹255.0/MWh)
+  Solar PV     :     80 MWp (₹425.0/MWh)
+  Small Hydro  :     20 MW  (₹680.0/MWh)
+  Total RE cap : 200 MW
+
+Total load: 185.0 MW avg  (varies 146.0 – 208.1 MW)
+
+--- Running 24-hour Linear OPF ---
+
+========================================================================
+  NUMERICAL METHOD & OPTIMIZATION SOLVER DETAILS
+========================================================================
+  Formulation            : 24-Hour Multi-Period Linear Optimal Power Flow (DC-OPF)
+  Optimization Problem   : Continuous Linear Program (LP)
+  PyPSA Optimization API : Linopy frontend -> HiGHS solver backend
+  Numerical Method       : Revised Dual Simplex Method / Presolve Reductions
+  Simplex Iterations     : 139 iterations (solution obtained)
+  Presolve Status        : HighsPresolveStatus.kReduced
+  Solver Model Status    : Optimal
+  Optimization Status    : ok, solver condition: optimal
+========================================================================
+
+
+====================================================================================================
+  24-HOUR DISPATCH TABLE  -  Multi-Renewable Integration (Solar + Wind + Hydro)
+====================================================================================================
+      Conv_MW  Solar_MW  Wind_MW  Hydro_MW  Load_MW  RE_MW  RE_%
+Hour                                                            
+0       88.67     -0.00    51.58     14.00   154.25  65.58 42.51
+1       91.76     -0.00    44.00     13.74   149.50  57.74 38.62
+2       72.70     -0.00    60.32     13.50   146.52  73.82 50.38
+3       71.57     -0.00    62.52     13.29   147.39  75.82 51.44
+4      101.14     -0.00    38.71     13.13   152.98  51.84 33.89
+5      107.54     -0.00    41.90     13.03   162.48  54.94 33.81
+6      106.88      5.41    50.16     13.00   175.45  68.57 39.08
+7      123.37     11.72    42.47     13.03   190.59  67.23 35.27
+8      124.86     22.08    40.04     13.13   200.11  75.25 37.60
+9      127.26     36.11    28.18     13.29   204.84  77.58 37.87
+10     105.54     51.33    36.86     13.50   207.23 101.69 49.07
+11      99.74     63.38    31.22     13.74   208.09 108.35 52.07
+12     104.36     68.00    21.39     14.00   207.75 103.39 49.77
+13     102.10     63.38    26.70     14.26   206.44 104.34 50.54
+14     119.26     51.33    19.42     14.50   204.51  85.25 41.69
+15     143.73     36.11     8.13     14.71   202.68  58.95 29.08
+16     146.42     22.08    18.63     14.87   201.99  55.57 27.51
+17     156.22     11.72    20.01     14.97   202.92  46.70 23.01
+18     137.46      5.41    45.89     15.00   203.76  66.30 32.54
+19     136.05     -0.00    49.60     14.97   200.62  64.57 32.18
+20     126.03     -0.00    50.34     14.87   191.24  65.21 34.10
+21     120.43     -0.00    44.55     14.71   179.69  59.26 32.98
+22      98.99     -0.00    57.96     14.50   171.44  72.46 42.26
+23     109.48     -0.00    43.76     14.26   167.51  58.02 34.64
+
+--------------------------------------------------
+  ENERGY SUMMARY (24 hours)
+--------------------------------------------------
+  Conventional :   2721.6 MWh  (61.3%)
+  Solar PV     :    448.1 MWh  (10.1%)
+  Wind         :    934.3 MWh  (21.0%)
+  Small Hydro  :    336.0 MWh  (7.6%)
+  ----------------------------------------
+  Total RE     :   1718.4 MWh  (38.7%)
+  Total Gen    :   4440.0 MWh
+
+  Capacity Factors:
+    Solar : 23.3%
+    Wind  : 38.9%
+    Hydro : 70.0%
+
+--- Economic Summary (24 h) ---
+  Conventional cost (₹3800.0/MWh) : ₹10,341,989  (94.0%)
+  Wind farm O&M cost (₹255.0/MWh) : ₹238,259  (2.2%)
+  Solar PV O&M cost (₹425.0/MWh) : ₹190,432  (1.7%)
+  Small Hydro cost (₹680.0/MWh)  : ₹228,480  (2.1%)
+  Total system operating cost   : ₹10,999,160
+  Without renewables (all conv) : ₹16,872,000
+  Net savings from renewables   : ₹5,872,840  (34.8% reduction)
+
+--- Peak Line Flows ---
+      Peak_MW  S_nom_MVA  Loading_%  Length_km
+name                                          
+L1-2    49.47     200.00      24.74      80.00
+L2-3    28.81     200.00      14.40      60.00
+L3-4    37.40     200.00      18.70      70.00
+L4-5    43.70     200.00      21.85      55.00
+L5-1    55.41     200.00      27.71      40.00
+L1-4    51.34     200.00      25.67      90.00
+
+-> Plots saved: D:\psmodel\phase2\multi_renewable_results.png
