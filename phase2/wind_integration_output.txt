@@ -1,23 +1,11 @@
 INFO:linopy.model: Solve problem using Highs solver
-INFO:linopy.io: Writing time: 0.06s
-INFO:linopy.constants: Optimization successful: 
-Status: ok
-Termination condition: optimal
-Solution: 144 primals, 408 duals
-Objective: 1.19e+05
-Solver: highs
-Runtime: 0.00s
-MIP gap: inf
-Dual bound: 0.00e+00
-Solver model: available
-Solver message: Optimal
-
+INFO:linopy.io: Writing time: 0.13s
 Running HiGHS 1.15.1 (git hash: 04024d7): Copyright (c) 2026 under MIT licence terms
 Includes third-party software components, see THIRD_PARTY_NOTICES.md for full details
-LP linopy-problem-5r2zb1aj has 408 rows; 144 cols; 624 nonzeros
+LP linopy-problem-2n0_szbw has 408 rows; 144 cols; 624 nonzeros
 Coefficient ranges:
   Matrix  [1e+00, 5e+01]
-  Cost    [3e+00, 4e+01]
+  Cost    [3e+02, 3e+03]
   Bound   [0e+00, 0e+00]
   RHS     [8e+00, 2e+02]
 Presolving model
@@ -27,89 +15,101 @@ Presolve reductions: rows 0(-408); columns 0(-144); nonzeros 0(-624) - Reduced t
 Performed postsolve
 Solving the original LP from the solution after postsolve
 
-Model name          : linopy-problem-5r2zb1aj
+Model name          : linopy-problem-2n0_szbw
 Model status        : Optimal
-Objective value     :  1.1902910087e+05
-P-D objective error :  1.2225459148e-16
+Objective value     :  1.0117473574e+07
+P-D objective error :  0.0000000000e+00
 HiGHS run time      :          0.00
-==============================================================
-   Wind Energy Integration Study - 4-Bus System (PyPSA OPF)
-==============================================================
-
-Network: 4 buses, 2 generators, 2 loads, 4 lines
-Snapshots: 24 hours
-Wind farm rated: 100.0 MW ($3.0/MWh)  |  Conv rated: 200.0 MW ($40.0/MWh)
-Total load: 160.0 MW avg  (varies 124.9 – 180.6 MW)
-
-Wind capacity factor range: 0.08 - 0.63
-Wind daily average CF: 0.39
-
---- Running 24-hour Linear OPF ---
-
-========================================================================
-  NUMERICAL METHOD & OPTIMIZATION SOLVER DETAILS
-========================================================================
-  Formulation            : 24-Hour Multi-Period Linear Optimal Power Flow (DC-OPF)
-  Optimization Problem   : Continuous Linear Program (LP)
-  PyPSA Optimization API : Linopy frontend -> HiGHS solver backend
-  Numerical Method       : Revised Dual Simplex Method / Presolve Reductions
-  Simplex Iterations     : 0 iterations (solution obtained)
-  Presolve Status        : HighsPresolveStatus.kReducedToEmpty
-  Solver Model Status    : Optimal
-  Optimization Status    : ok, solver condition: optimal
-========================================================================
-
-
-========================================================================
-  24-HOUR DISPATCH TABLE  -  4-Bus Wind Integration Study
-========================================================================
-      Conv_MW  Wind_MW  Total_Gen_MW  Total_Load_MW  Wind_%
-Hour                                                       
-0       81.24    51.58        132.82         132.82   38.83
-1       84.39    44.00        128.39         128.39   34.27
-2       65.14    60.32        125.46         125.46   48.08
-3       63.49    62.52        126.02         126.02   49.62
-4       92.21    38.71        130.92         130.92   29.57
-5       97.52    41.90        139.42         139.42   30.06
-6      101.10    50.16        151.27         151.27   33.16
-7      122.85    42.47        165.32         165.32   25.69
-8      133.87    40.04        173.91         173.91   23.02
-9      149.79    28.18        177.96         177.96   15.83
-10     143.07    36.86        179.93         179.93   20.48
-11     149.39    31.22        180.61         180.61   17.29
-12     158.90    21.39        180.29         180.29   11.86
-13     152.47    26.70        179.17         179.17   14.90
-14     158.09    19.42        177.51         177.51   10.94
-15     167.81     8.13        175.94         175.94    4.62
-16     156.74    18.63        175.37         175.37   10.62
-17     156.24    20.01        176.25         176.25   11.35
-18     131.16    45.89        177.05         177.05   25.92
-19     124.58    49.60        174.18         174.18   28.48
-20     115.19    50.34        165.54         165.54   30.41
-21     110.41    44.55        154.96         154.96   28.75
-22      89.62    57.96        147.58         147.58   39.27
-23     100.38    43.76        144.14         144.14   30.36
-
---- Energy Summary (24 h) ---
-  Conventional :   2905.7 MWh  (75.7%)
-  Wind         :    934.3 MWh  (24.3%)
-  Total        :   3840.0 MWh
-
-  Wind capacity factor : 38.9%
-
---- Economic Summary (24 h) ---
-  Conventional cost ($40.0/MWh) : $116,226  (97.6%)
-  Wind farm O&M cost ($3.0/MWh) : $2,803  (2.4%)
-  Total system operating cost   : $119,029
-  Without wind (all conv)       : $153,600
-  Net savings from wind farm    : $34,571  (22.5% reduction)
-
---- Peak Line Flows ---
-      Peak_MW  S_nom_MVA  Loading_%  Length_km
-name                                          
-L1-2    61.77     200.00      30.88      80.00
-L2-3    19.32     200.00       9.66      60.00
-L3-4    19.32     200.00       9.66      70.00
-L4-1   106.05     200.00      53.02      50.00
-
--> Plots saved: d:\psmodel\phase2\wind_integration_results.png
+INFO:linopy.constants: Optimization successful: 
+Status: ok
+Termination condition: optimal
+Solution: 144 primals, 408 duals
+Objective: 1.01e+07
+Solver: highs
+Runtime: 0.00s
+MIP gap: inf
+Dual bound: 0.00e+00
+Solver model: available
+Solver message: Optimal
+
+==============================================================
+   Wind Energy Integration Study - 4-Bus System (PyPSA OPF)
+==============================================================
+
+Network: 4 buses, 2 generators, 2 loads, 4 lines
+Snapshots: 24 hours
+Wind farm rated: 100.0 MW (₹255.0/MWh)  |  Conv rated: 200.0 MW (₹3400.0/MWh)
+Total load: 160.0 MW avg  (varies 124.9 – 180.6 MW)
+
+Wind capacity factor range: 0.08 - 0.63
+Wind daily average CF: 0.39
+
+--- Running 24-hour Linear OPF ---
+
+========================================================================
+  NUMERICAL METHOD & OPTIMIZATION SOLVER DETAILS
+========================================================================
+  Formulation            : 24-Hour Multi-Period Linear Optimal Power Flow (DC-OPF)
+  Optimization Problem   : Continuous Linear Program (LP)
+  PyPSA Optimization API : Linopy frontend -> HiGHS solver backend
+  Numerical Method       : Revised Dual Simplex Method / Presolve Reductions
+  Simplex Iterations     : 0 iterations (solution obtained)
+  Presolve Status        : HighsPresolveStatus.kReducedToEmpty
+  Solver Model Status    : Optimal
+  Optimization Status    : ok, solver condition: optimal
+========================================================================
+
+
+========================================================================
+  24-HOUR DISPATCH TABLE  -  4-Bus Wind Integration Study
+========================================================================
+      Conv_MW  Wind_MW  Total_Gen_MW  Total_Load_MW  Wind_%
+Hour                                                       
+0       81.24    51.58        132.82         132.82   38.83
+1       84.39    44.00        128.39         128.39   34.27
+2       65.14    60.32        125.46         125.46   48.08
+3       63.49    62.52        126.02         126.02   49.62
+4       92.21    38.71        130.92         130.92   29.57
+5       97.52    41.90        139.42         139.42   30.06
+6      101.10    50.16        151.27         151.27   33.16
+7      122.85    42.47        165.32         165.32   25.69
+8      133.87    40.04        173.91         173.91   23.02
+9      149.79    28.18        177.96         177.96   15.83
+10     143.07    36.86        179.93         179.93   20.48
+11     149.39    31.22        180.61         180.61   17.29
+12     158.90    21.39        180.29         180.29   11.86
+13     152.47    26.70        179.17         179.17   14.90
+14     158.09    19.42        177.51         177.51   10.94
+15     167.81     8.13        175.94         175.94    4.62
+16     156.74    18.63        175.37         175.37   10.62
+17     156.24    20.01        176.25         176.25   11.35
+18     131.16    45.89        177.05         177.05   25.92
+19     124.58    49.60        174.18         174.18   28.48
+20     115.19    50.34        165.54         165.54   30.41
+21     110.41    44.55        154.96         154.96   28.75
+22      89.62    57.96        147.58         147.58   39.27
+23     100.38    43.76        144.14         144.14   30.36
+
+--- Energy Summary (24 h) ---
+  Conventional :   2905.7 MWh  (75.7%)
+  Wind         :    934.3 MWh  (24.3%)
+  Total        :   3840.0 MWh
+
+  Wind capacity factor : 38.9%
+
+--- Economic Summary (24 h) ---
+  Conventional cost (₹3400.0/MWh) : ₹9,879,215  (97.6%)
+  Wind farm O&M cost (₹255.0/MWh) : ₹238,259  (2.4%)
+  Total system operating cost   : ₹10,117,474
+  Without wind (all conv)       : ₹13,056,000
+  Net savings from wind farm    : ₹2,938,526  (22.5% reduction)
+
+--- Peak Line Flows ---
+      Peak_MW  S_nom_MVA  Loading_%  Length_km
+name                                          
+L1-2    61.77     200.00      30.88      80.00
+L2-3    19.32     200.00       9.66      60.00
+L3-4    19.32     200.00       9.66      70.00
+L4-1   106.05     200.00      53.02      50.00
+
+-> Plots saved: d:\psmodel\phase2\wind_integration_results.png

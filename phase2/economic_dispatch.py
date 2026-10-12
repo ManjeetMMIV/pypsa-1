@@ -4,6 +4,11 @@ import pypsa
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import sys
+import io
+
+if sys.stdout.encoding and sys.stdout.encoding.lower().startswith("cp"):
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
 
 warnings.filterwarnings("ignore", category=FutureWarning)
 logging.getLogger("pypsa").setLevel(logging.WARNING)
@@ -18,27 +23,27 @@ def run_economic_dispatch():
     # Add a single bus
     network.add("Bus", "Main Bus")
 
-    # Add generators with different marginal costs
-    # Cheap base load
+    # Add generators with different marginal costs in Indian Rupees (₹/MWh)
+    # Cheap base load (Coal @ ₹3.00/kWh = ₹3000/MWh)
     network.add("Generator",
                 "Base Load (Coal)",
                 bus="Main Bus",
                 p_nom=500,
-                marginal_cost=30)
+                marginal_cost=3000)
                 
-    # More expensive but flexible
+    # More expensive but flexible (Gas @ ₹6.00/kWh = ₹6000/MWh)
     network.add("Generator",
                 "Mid Merit (Gas)",
                 bus="Main Bus",
                 p_nom=300,
-                marginal_cost=60)
+                marginal_cost=6000)
                 
-    # Peaking plant
+    # Peaking plant (Open-cycle / Diesel @ ₹10.00/kWh = ₹10000/MWh)
     network.add("Generator",
                 "Peaking Plant",
                 bus="Main Bus",
                 p_nom=200,
-                marginal_cost=100)
+                marginal_cost=10000)
 
     # Add a load that varies over the day
     load_profile = [400, 350, 320, 300, 320, 380, 450, 550, 650, 700, 750, 780, 
@@ -73,7 +78,7 @@ def run_economic_dispatch():
         print(f"Presolve Status        : {sm.getModelPresolveStatus()}")
         print(f"Solver Model Status    : {sm.modelStatusToString(sm.getModelStatus())}")
     print(f"Optimization Status    : {status}, condition: {condition}")
-    print(f"Objective (Total Cost) : {network.objective:,.2f} \u20ac")
+    print(f"Objective (Total Cost) : \u20b9{network.objective:,.2f}")
     print("=" * 70 + "\n")
     
     # Show dispatch results
@@ -86,7 +91,7 @@ def run_economic_dispatch():
     dispatch_results.plot(kind="area", stacked=True, ax=ax, colormap="tab10", alpha=0.8)
     ax.plot(network.loads_t.p_set, color='black', label="Total Demand", linewidth=2)
     
-    ax.set_title("Economic Dispatch")
+    ax.set_title("Economic Dispatch (Indian Grid Benchmark)")
     ax.set_xlabel("Hour of the Day")
     ax.set_ylabel("Power Output (MW)")
     ax.legend()
@@ -96,7 +101,7 @@ def run_economic_dispatch():
 
     # Show market clearing prices (Marginal prices at the bus)
     prices = network.buses_t.marginal_price
-    print("\nMarket Clearing Prices (\u20ac/MWh):")
+    print("\nMarket Clearing Prices (\u20b9/MWh):")
     print(prices.head())
 
     return network

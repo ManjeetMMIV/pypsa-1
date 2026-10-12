@@ -64,16 +64,16 @@ HOURS    = 24
 
 # ---- Generators ----
 CONV_PNOM     = 200.0   # MW  – conventional plant
-CONV_COST     = 45.0    # $/MWh – fuel + O&M + carbon
+CONV_COST     = 3800.0  # ₹/MWh (approx ₹3.80/kWh – coal thermal fuel + O&M + handling)
 
 WIND_PNOM     = 100.0   # MW  – onshore wind farm
-WIND_COST     = 3.0     # $/MWh – variable O&M (turbine upkeep, lubrication)
+WIND_COST     = 255.0   # ₹/MWh (approx ₹0.25/kWh – variable O&M: turbine upkeep, lubrication)
 
 SOLAR_PNOM    = 80.0    # MWp – solar PV farm
-SOLAR_COST    = 5.0     # $/MWh – variable O&M (panel cleaning, inverter servicing)
+SOLAR_COST    = 425.0   # ₹/MWh (approx ₹0.42/kWh – variable O&M: panel cleaning, inverter servicing)
 
 HYDRO_PNOM    = 20.0    # MW  – small run-of-river hydro
-HYDRO_COST    = 8.0     # $/MWh – variable O&M (mechanical servicing, water rights)
+HYDRO_COST    = 680.0   # ₹/MWh (approx ₹0.68/kWh – variable O&M: mechanical servicing, water rights)
 
 
 # ---- Loads (base / peak values – actual profiles are time-varying) ----
@@ -337,13 +337,13 @@ def print_dispatch_table(n):
     savings       = all_conv_cost - actual_cost
 
     print("\n--- Economic Summary (24 h) ---")
-    print(f"  Conventional cost (${CONV_COST:.1f}/MWh) : ${conv_cost:,.0f}  ({100*conv_cost/actual_cost:.1f}%)")
-    print(f"  Wind farm O&M cost (${WIND_COST:.1f}/MWh) : ${wind_cost:,.0f}  ({100*wind_cost/actual_cost:.1f}%)")
-    print(f"  Solar PV O&M cost (${SOLAR_COST:.1f}/MWh) : ${solar_cost:,.0f}  ({100*solar_cost/actual_cost:.1f}%)")
-    print(f"  Small Hydro cost (${HYDRO_COST:.1f}/MWh)  : ${hydro_cost:,.0f}  ({100*hydro_cost/actual_cost:.1f}%)")
-    print(f"  Total system operating cost   : ${actual_cost:,.0f}")
-    print(f"  Without renewables (all conv) : ${all_conv_cost:,.0f}")
-    print(f"  Net savings from renewables   : ${savings:,.0f}  ({100*savings/all_conv_cost:.1f}% reduction)")
+    print(f"  Conventional cost (₹{CONV_COST:.1f}/MWh) : ₹{conv_cost:,.0f}  ({100*conv_cost/actual_cost:.1f}%)")
+    print(f"  Wind farm O&M cost (₹{WIND_COST:.1f}/MWh) : ₹{wind_cost:,.0f}  ({100*wind_cost/actual_cost:.1f}%)")
+    print(f"  Solar PV O&M cost (₹{SOLAR_COST:.1f}/MWh) : ₹{solar_cost:,.0f}  ({100*solar_cost/actual_cost:.1f}%)")
+    print(f"  Small Hydro cost (₹{HYDRO_COST:.1f}/MWh)  : ₹{hydro_cost:,.0f}  ({100*hydro_cost/actual_cost:.1f}%)")
+    print(f"  Total system operating cost   : ₹{actual_cost:,.0f}")
+    print(f"  Without renewables (all conv) : ₹{all_conv_cost:,.0f}")
+    print(f"  Net savings from renewables   : ₹{savings:,.0f}  ({100*savings/all_conv_cost:.1f}% reduction)")
 
     return tbl
 
@@ -424,8 +424,8 @@ def plot_results(n, tbl):
     for bar in bars:
         h = bar.get_height()
         ax.text(bar.get_x() + bar.get_width() / 2, h + all_conv_cost * 0.01,
-                f"${h:,.0f}", ha="center", va="bottom", fontsize=9, fontweight="bold")
-    ax.set_ylabel("Cost ($)")
+                f"₹{h:,.0f}", ha="center", va="bottom", fontsize=9, fontweight="bold")
+    ax.set_ylabel("Cost (₹)")
     ax.set_title("24-Hour Cost Comparison")
     ax.grid(True, alpha=0.3, axis="y")
 
@@ -503,10 +503,10 @@ if __name__ == "__main__":
           f"{len(net.loads)} loads, {len(net.lines)} lines")
     print(f"Snapshots: {HOURS} hours")
     print(f"\nGeneration capacity:")
-    print(f"  Conventional : {CONV_PNOM:6.0f} MW  (${CONV_COST:.1f}/MWh)")
-    print(f"  Wind Farm    : {WIND_PNOM:6.0f} MW  (${WIND_COST:.1f}/MWh)")
-    print(f"  Solar PV     : {SOLAR_PNOM:6.0f} MWp (${SOLAR_COST:.1f}/MWh)")
-    print(f"  Small Hydro  : {HYDRO_PNOM:6.0f} MW  (${HYDRO_COST:.1f}/MWh)")
+    print(f"  Conventional : {CONV_PNOM:6.0f} MW  (₹{CONV_COST:.1f}/MWh)")
+    print(f"  Wind Farm    : {WIND_PNOM:6.0f} MW  (₹{WIND_COST:.1f}/MWh)")
+    print(f"  Solar PV     : {SOLAR_PNOM:6.0f} MWp (₹{SOLAR_COST:.1f}/MWh)")
+    print(f"  Small Hydro  : {HYDRO_PNOM:6.0f} MW  (₹{HYDRO_COST:.1f}/MWh)")
     print(f"  Total RE cap : {SOLAR_PNOM + WIND_PNOM + HYDRO_PNOM:.0f} MW")
     lp = load_profile(HOURS)
     total_min = lp['bus2'].min() + lp['bus4'].min() + lp['bus5'].min()
