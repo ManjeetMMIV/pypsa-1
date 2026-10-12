@@ -1,80 +1,203 @@
-﻿[Base case] converged = True, Newton-Raphson iterations = 5
-
-================================================================
-BASE CASE  (loads: constant_z)
-================================================================
-
---- Bus voltages ---
-        V_pu     V_kV  Angle_deg
-name                            
-Bus 1 1.0400  17.1600     0.0000
-Bus 2 1.0250  18.4500     8.9314
-Bus 3 1.0250  14.1450     4.2896
-Bus 4 1.0258 235.9299    27.6574
-Bus 5 0.9960 229.0876    25.8388
-Bus 6 1.0118 232.7199    26.0302
-Bus 7 1.0254 235.8484    33.3692
-Bus 8 1.0148 233.4095    30.2970
-Bus 9 1.0319 237.3308    31.5903
-
---- Generators ---
-         P_MW   Q_MVAr
-name                  
-G1    75.7029  27.2190
-G2   163.0000   7.2165
-G3    85.0000 -10.0196
-
---- Loads (actual consumption at solved voltage) ---
-           P_MW  Q_MVAr
-name                   
-Load A 124.0102 49.6041
-Load B  92.1412 30.7137
-Load C 102.9867 36.0454
-
---- Lines (P0/Q0 sending end, P1/Q1 receiving end) ---
-        P0_MW  Q0_MVAr    P1_MW  Q1_MVAr  S0_MVA  Ploss_MW
-name                                                      
-L4-5  41.8626  22.3222 -41.6013 -38.0907 47.4421    0.2613
-L4-6  33.8403   1.4503 -33.6399 -16.7662 33.8714    0.2004
-L5-7 -82.4090 -11.5134  84.6038  -8.7105 83.2093    2.1949
-L6-9 -58.5013 -13.9475  59.8123 -17.7229 60.1410    1.3110
-L7-8  78.3962   0.0906 -77.8943 -11.3454 78.3962    0.5019
-L8-9 -25.0925 -24.6999  25.1877   3.6175 35.2096    0.0952
-
---- Transformers (bus0 = generator side) ---
-          P0_MW  Q0_MVAr     P1_MW  Q1_MVAr   S0_MVA  Ploss_MW
-name                                                          
-TF 4-1  75.7029  27.2190  -75.7029 -23.7724  80.4475   -0.0000
-TF 7-2 163.0000   7.2165 -163.0000   8.6199 163.1597   -0.0000
-TF 9-3  85.0000 -10.0196  -85.0000  14.1055  85.5885   -0.0000
-
---- Power balance ---
-Total generation  P_G    = 323.7029 MW
-Total load        P_L    = 319.1382 MW
-Branch losses     P_loss = 4.5647 MW  (lines + transformers)
-Check P_G - P_L - P_loss = -1.22e-09 MW
-Reactive: Q_G = 24.4159, Q_L = 116.3632, branch net = -91.9473 MVAr, check Q_G - Q_L - Q_branch = -1.18e-08
-
-================================================================
-COMPARISON WITH SIMULINK DIAGRAM
-================================================================
-       V_pypsa  V_sim  Ang_pypsa  Ang_sim
-name                                     
-Bus 1   1.0400 1.0400     0.0000   0.0000
-Bus 2   1.0250 1.0250     8.9314   8.8900
-Bus 3   1.0250 1.0250     4.2896   4.2400
-Bus 4   1.0258 1.0260    27.6574  27.6400
-Bus 5   0.9960 0.9960    25.8388  25.8100
-Bus 6   1.0118 1.0120    26.0302  26.0100
-Bus 7   1.0254 1.0250    33.3692  33.3300
-Bus 8   1.0148 1.0150    30.2970  30.2500
-Bus 9   1.0319 1.0320    31.5903  31.5500
-      P_pypsa    P_sim  Q_pypsa   Q_sim
-name                                   
-G1    75.7029  76.4000  27.2190 27.5000
-G2   163.0000 163.0000   7.2165  7.3000
-G3    85.0000  85.0000 -10.0196 -9.8000
-
-Small differences (<~0.001 pu, <~0.05 deg, <~1 MW at the slack) are expected: line/transformer data are not printed in the diagram.
-[N-1, line 4-5 removed] converged = True, Newton-Raphson iterations = 5
-
+
+======================================================================
+  [Base case] AC POWER FLOW NUMERICAL METHOD & CONVERGENCE
+======================================================================
+Numerical Method       : Full AC Newton-Raphson Method
+Mathematical Model     : Non-linear AC Nodal Power Balance (P-Q mismatch)
+Jacobian Linear Solver : scipy.sparse.linalg.spsolve (SuperLU)
+Mismatch Tolerance     : 1.00e-06 pu (x_tol)
+Convergence Status     : CONVERGED
+Convergence Iteration  : Iteration 5 (solution obtained)
+Final Mismatch Error   : 6.5391e-09 pu
+
+--- Newton-Raphson Iteration Progress ---
+  Iteration  0 : Max Mismatch =   902.777778 MVA
+  Iteration  1 : Max Mismatch =   358.038380 MVA
+  Iteration  2 : Max Mismatch =    54.064869 MVA
+  Iteration  3 : Max Mismatch =     1.708025 MVA
+  Iteration  4 : Max Mismatch =     0.002483 MVA
+  Iteration  5 : Max Mismatch =     0.000000 MVA  <-- Solved & CONVERGED at iteration 5
+======================================================================
+
+
+================================================================
+BASE CASE  (loads: constant_z)
+================================================================
+
+--- Bus voltages ---
+        V_pu     V_kV  Angle_deg
+name                            
+Bus 1 1.0400  17.1600     0.0000
+Bus 2 1.0250  18.4500     8.9314
+Bus 3 1.0250  14.1450     4.2896
+Bus 4 1.0258 235.9299    27.6574
+Bus 5 0.9960 229.0876    25.8388
+Bus 6 1.0118 232.7199    26.0302
+Bus 7 1.0254 235.8484    33.3692
+Bus 8 1.0148 233.4095    30.2970
+Bus 9 1.0319 237.3308    31.5903
+
+--- Generators ---
+         P_MW   Q_MVAr
+name                  
+G1    75.7029  27.2190
+G2   163.0000   7.2165
+G3    85.0000 -10.0196
+
+--- Loads (actual consumption at solved voltage) ---
+           P_MW  Q_MVAr
+name                   
+Load A 124.0102 49.6041
+Load B  92.1412 30.7137
+Load C 102.9867 36.0454
+
+--- Lines (P0/Q0 sending end, P1/Q1 receiving end) ---
+        P0_MW  Q0_MVAr    P1_MW  Q1_MVAr  S0_MVA  Ploss_MW
+name                                                      
+L4-5  41.8626  22.3222 -41.6013 -38.0907 47.4421    0.2613
+L4-6  33.8403   1.4503 -33.6399 -16.7662 33.8714    0.2004
+L5-7 -82.4090 -11.5134  84.6038  -8.7105 83.2093    2.1949
+L6-9 -58.5013 -13.9475  59.8123 -17.7229 60.1410    1.3110
+L7-8  78.3962   0.0906 -77.8943 -11.3454 78.3962    0.5019
+L8-9 -25.0925 -24.6999  25.1877   3.6175 35.2096    0.0952
+
+--- Transformers (bus0 = generator side) ---
+          P0_MW  Q0_MVAr     P1_MW  Q1_MVAr   S0_MVA  Ploss_MW
+name                                                          
+TF 4-1  75.7029  27.2190  -75.7029 -23.7724  80.4475   -0.0000
+TF 7-2 163.0000   7.2165 -163.0000   8.6199 163.1597   -0.0000
+TF 9-3  85.0000 -10.0196  -85.0000  14.1055  85.5885   -0.0000
+
+--- Power balance ---
+Total generation  P_G    = 323.7029 MW
+Total load        P_L    = 319.1382 MW
+Branch losses     P_loss = 4.5647 MW  (lines + transformers)
+Check P_G - P_L - P_loss = -1.22e-09 MW
+Reactive: Q_G = 24.4159, Q_L = 116.3632, branch net = -91.9473 MVAr, check Q_G - Q_L - Q_branch = -1.18e-08
+
+================================================================
+COMPARISON WITH SIMULINK DIAGRAM
+================================================================
+       V_pypsa  V_sim  Ang_pypsa  Ang_sim
+name                                     
+Bus 1   1.0400 1.0400     0.0000   0.0000
+Bus 2   1.0250 1.0250     8.9314   8.8900
+Bus 3   1.0250 1.0250     4.2896   4.2400
+Bus 4   1.0258 1.0260    27.6574  27.6400
+Bus 5   0.9960 0.9960    25.8388  25.8100
+Bus 6   1.0118 1.0120    26.0302  26.0100
+Bus 7   1.0254 1.0250    33.3692  33.3300
+Bus 8   1.0148 1.0150    30.2970  30.2500
+Bus 9   1.0319 1.0320    31.5903  31.5500
+      P_pypsa    P_sim  Q_pypsa   Q_sim
+name                                   
+G1    75.7029  76.4000  27.2190 27.5000
+G2   163.0000 163.0000   7.2165  7.3000
+G3    85.0000  85.0000 -10.0196 -9.8000
+
+Small differences (<~0.001 pu, <~0.05 deg, <~1 MW at the slack) are expected: line/transformer data are not printed in the diagram.
+
+======================================================================
+  [N-1, line 4-5 removed] AC POWER FLOW NUMERICAL METHOD & CONVERGENCE
+======================================================================
+Numerical Method       : Full AC Newton-Raphson Method
+Mathematical Model     : Non-linear AC Nodal Power Balance (P-Q mismatch)
+Jacobian Linear Solver : scipy.sparse.linalg.spsolve (SuperLU)
+Mismatch Tolerance     : 1.00e-06 pu (x_tol)
+Convergence Status     : CONVERGED
+Convergence Iteration  : Iteration 5 (solution obtained)
+Final Mismatch Error   : 5.2409e-08 pu
+
+--- Newton-Raphson Iteration Progress ---
+  Iteration  0 : Max Mismatch =   902.777778 MVA
+  Iteration  1 : Max Mismatch =   377.092170 MVA
+  Iteration  2 : Max Mismatch =    56.872628 MVA
+  Iteration  3 : Max Mismatch =     2.288108 MVA
+  Iteration  4 : Max Mismatch =     0.005600 MVA
+  Iteration  5 : Max Mismatch =     0.000000 MVA  <-- Solved & CONVERGED at iteration 5
+======================================================================
+
+
+================================================================
+CONTINGENCY: LINE 4-5 REMOVED
+================================================================
+
+--- Bus voltages ---
+        V_pu     V_kV  Angle_deg
+name                            
+Bus 1 1.0400  17.1600     0.0000
+Bus 2 1.0250  18.4500     5.3499
+Bus 3 1.0250  14.1450     2.3528
+Bus 4 1.0377 238.6655    28.3582
+Bus 5 0.9027 207.6209    19.8252
+Bus 6 1.0193 234.4464    25.7921
+Bus 7 1.0040 230.9245    29.6687
+Bus 8 1.0013 230.3089    27.3306
+Bus 9 1.0288 236.6197    29.6454
+
+--- Generators ---
+         P_MW  Q_MVAr
+name                 
+G1    53.6785  4.9652
+G2   163.0000 42.4959
+G3    85.0000 -4.6055
+
+--- Loads (actual consumption at solved voltage) ---
+           P_MW  Q_MVAr
+name                   
+Load A 101.8583 40.7433
+Load B  93.5134 31.1711
+Load C 100.2688 35.0941
+
+--- Lines (P0/Q0 sending end, P1/Q1 receiving end) ---
+         P0_MW  Q0_MVAr    P1_MW  Q1_MVAr   S0_MVA  Ploss_MW
+name                                                        
+L4-6   53.6785   3.4176 -53.2011 -17.5492  53.7872    0.4774
+L5-7 -101.8583 -40.7433 106.2466  34.9313 109.7048    4.3883
+L6-9  -40.3123 -13.6220  40.9316 -21.2226  42.5516    0.6193
+L7-8   56.7534  -9.3152 -56.4815  -3.3620  57.5128    0.2719
+L8-9  -43.7872 -31.7321  44.0684  12.5754  54.0763    0.2812
+
+--- Transformers (bus0 = generator side) ---
+          P0_MW  Q0_MVAr     P1_MW  Q1_MVAr   S0_MVA  Ploss_MW
+name                                                          
+TF 4-1  53.6785   4.9652  -53.6785  -3.4176  53.9076   -0.0000
+TF 7-2 163.0000  42.4959 -163.0000 -25.6161 168.4485    0.0000
+TF 9-3  85.0000  -4.6055  -85.0000   8.6472  85.1247    0.0000
+
+--- Power balance ---
+Total generation  P_G    = 301.6785 MW
+Total load        P_L    = 295.6405 MW
+Branch losses     P_loss = 6.0380 MW  (lines + transformers)
+Check P_G - P_L - P_loss = -2.11e-08 MW
+Reactive: Q_G = 42.8556, Q_L = 107.0085, branch net = -64.1530 MVAr, check Q_G - Q_L - Q_branch = -1.28e-07
+
+================================================================
+BASE vs N-1
+================================================================
+       V_base  V_N-1      dV
+name                        
+Bus 1  1.0400 1.0400  0.0000
+Bus 2  1.0250 1.0250  0.0000
+Bus 3  1.0250 1.0250  0.0000
+Bus 4  1.0258 1.0377  0.0119
+Bus 5  0.9960 0.9027 -0.0933
+Bus 6  1.0118 1.0193  0.0075
+Bus 7  1.0254 1.0040 -0.0214
+Bus 8  1.0148 1.0013 -0.0135
+Bus 9  1.0319 1.0288 -0.0031
+       P_base    P_N-1   Q_base   Q_N-1
+name                                   
+G1    75.7029  53.6785  27.2190  4.9652
+G2   163.0000 163.0000   7.2165 42.4959
+G3    85.0000  85.0000 -10.0196 -4.6055
+      S_base_MVA  S_N-1_MVA
+name                       
+L4-5     47.4421        NaN
+L4-6     33.8714    53.7872
+L5-7     83.2093   109.7048
+L6-9     60.1410    42.5516
+L7-8     78.3962    57.5128
+L8-9     35.2096    54.0763
+
+Losses: base = 4.5647 MW, N-1 = 6.0380 MW, change = +1.4732 MW

@@ -212,14 +212,33 @@ def build_network():
 # ====================================================================
 
 def run_opf(n):
-    """Run linear OPF and return status."""
+    """Run linear OPF and report numerical method & solver convergence details."""
     status = n.optimize(solver_name="highs")
     if isinstance(status, tuple):
-        ok = status[0] == "ok"
-        print(f"OPF status: {status[0]}, solver condition: {status[1]}")
+        stat_str, cond_str = status[0], status[1]
     else:
-        ok = status == "ok"
-        print(f"OPF status: {status}")
+        stat_str, cond_str = str(status), "optimal" if status == "ok" else "failed"
+
+    ok = stat_str == "ok"
+
+    print("\n" + "=" * 72)
+    print("  NUMERICAL METHOD & OPTIMIZATION SOLVER DETAILS")
+    print("=" * 72)
+    print("  Formulation            : 24-Hour Multi-Period Linear Optimal Power Flow (DC-OPF)")
+    print("  Optimization Problem   : Continuous Linear Program (LP)")
+    print("  PyPSA Optimization API : Linopy frontend -> HiGHS solver backend")
+    print("  Numerical Method       : Revised Dual Simplex Method / Presolve Reductions")
+
+    sm = getattr(n.model, "solver_model", None)
+    if sm is not None:
+        info = sm.getInfo()
+        print(f"  Simplex Iterations     : {info.simplex_iteration_count} iterations (solution obtained)")
+        if hasattr(info, "ipm_iteration_count") and info.ipm_iteration_count > 0:
+            print(f"  Interior Point Iters   : {info.ipm_iteration_count}")
+        print(f"  Presolve Status        : {sm.getModelPresolveStatus()}")
+        print(f"  Solver Model Status    : {sm.modelStatusToString(sm.getModelStatus())}")
+    print(f"  Optimization Status    : {stat_str}, solver condition: {cond_str}")
+    print("=" * 72 + "\n")
     return ok
 
 

@@ -22,9 +22,26 @@
 
 import logging
 import warnings
+import re
 import numpy as np
 import pandas as pd
 import pypsa
+
+
+class NRIterationTracker(logging.Handler):
+    """Captures maximum power mismatch at each Newton-Raphson iteration from PyPSA's internal solver."""
+    def __init__(self):
+        super().__init__()
+        self.history = []
+
+    def emit(self, record):
+        m = re.search(r"Error at iteration (\d+):\s*([0-9.eE+-]+)", record.getMessage())
+        if m:
+            it = int(m.group(1))
+            err = float(m.group(2))
+            if not self.history or self.history[-1][0] != it:
+                self.history.append((it, err))
+
 
 
 # ------------------------------------------------
@@ -683,11 +700,24 @@ print("=" * 70)
 print("RUNNING AC NEWTON-RAPHSON POWER FLOW")
 print("=" * 70)
 
-pf = n.pf()
+tracker = NRIterationTracker()
+pf_logger = logging.getLogger("pypsa.network.power_flow")
+old_level = pf_logger.level
+old_prop = pf_logger.propagate
+pf_logger.setLevel(logging.DEBUG)
+pf_logger.propagate = False
+pf_logger.addHandler(tracker)
+
+try:
+    pf = n.pf()
+finally:
+    pf_logger.removeHandler(tracker)
+    pf_logger.setLevel(old_level)
+    pf_logger.propagate = old_prop
 
 
 # ================================================================
-# 17. CHECK CONVERGENCE
+# 17. CHECK CONVERGENCE & NUMERICAL METHOD DETAILS
 # ================================================================
 
 converged = bool(
@@ -698,10 +728,26 @@ iterations = int(
     pf["n_iter"].to_numpy().max()
 )
 
+err = float(pf["error"].iloc[0, 0])
 
-print(f"Converged      : {converged}")
-print(f"NR iterations  : {iterations}")
+print("=" * 70)
+print("AC POWER FLOW NUMERICAL METHOD & CONVERGENCE REPORT")
+print("=" * 70)
+print("Numerical Method       : Full AC Newton-Raphson Method")
+print("Mathematical Model     : Non-linear AC Nodal Power Balance (P-Q mismatch)")
+print("Jacobian Linear Solver : scipy.sparse.linalg.spsolve (SuperLU)")
+print("Mismatch Tolerance     : 1.00e-06 pu (x_tol)")
+print(f"Convergence Status     : {'CONVERGED' if converged else 'FAILED'}")
+print(f"Convergence Iteration  : Iteration {iterations} (solution obtained)")
+print(f"Final Mismatch Error   : {err:.4e} pu")
+if tracker.history:
+    print("\n--- Newton-Raphson Iteration Progress ---")
+    for step, mismatch in tracker.history:
+        tag = f"  <-- Solved & CONVERGED at iteration {step}" if step == iterations else ""
+        print(f"  Iteration {step:2d} : Max Mismatch = {mismatch:12.6f} MVA{tag}")
+print("=" * 70)
 print()
+
 
 
 if not converged:

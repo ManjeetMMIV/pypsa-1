@@ -1,12 +1,12 @@
 INFO:linopy.model: Solve problem using Highs solver
-INFO:linopy.io: Writing time: 0.08s
+INFO:linopy.io: Writing time: 0.05s
 INFO:linopy.constants: Optimization successful: 
 Status: ok
 Termination condition: optimal
 Solution: 240 primals, 648 duals
 Objective: 1.24e+05
 Solver: highs
-Runtime: 0.01s
+Runtime: 0.00s
 MIP gap: inf
 Dual bound: 0.00e+00
 Solver model: available
@@ -14,7 +14,7 @@ Solver message: Optimal
 
 Running HiGHS 1.15.1 (git hash: 04024d7): Copyright (c) 2026 under MIT licence terms
 Includes third-party software components, see THIRD_PARTY_NOTICES.md for full details
-LP linopy-problem-ok9v3509 has 648 rows; 240 cols; 1032 nonzeros
+LP linopy-problem-rk3fd_ze has 648 rows; 240 cols; 1032 nonzeros
 Coefficient ranges:
   Matrix  [1e+00, 5e+01]
   Cost    [5e+00, 4e+01]
@@ -35,12 +35,12 @@ Using dual simplex solver
 Performed postsolve
 Solving the original LP from the solution after postsolve
 
-Model name          : linopy-problem-ok9v3509
+Model name          : linopy-problem-rk3fd_ze
 Model status        : Optimal
 Simplex   iterations: 139
 Objective value     :  1.2415092116e+05
 P-D objective error :  0.0000000000e+00
-HiGHS run time      :          0.01
+HiGHS run time      :          0.00
 ======================================================================
   Multi-Renewable Integration Study - 5-Bus System (PyPSA OPF)
   Sources: Solar PV + Wind + Small Hydro
@@ -59,7 +59,20 @@ Generation capacity:
 Total load: 185.0 MW avg  (varies 146.0 – 208.1 MW)
 
 --- Running 24-hour Linear OPF ---
-OPF status: ok, solver condition: optimal
+
+========================================================================
+  NUMERICAL METHOD & OPTIMIZATION SOLVER DETAILS
+========================================================================
+  Formulation            : 24-Hour Multi-Period Linear Optimal Power Flow (DC-OPF)
+  Optimization Problem   : Continuous Linear Program (LP)
+  PyPSA Optimization API : Linopy frontend -> HiGHS solver backend
+  Numerical Method       : Revised Dual Simplex Method / Presolve Reductions
+  Simplex Iterations     : 139 iterations (solution obtained)
+  Presolve Status        : HighsPresolveStatus.kReduced
+  Solver Model Status    : Optimal
+  Optimization Status    : ok, solver condition: optimal
+========================================================================
+
 
 ====================================================================================================
   24-HOUR DISPATCH TABLE  -  Multi-Renewable Integration (Solar + Wind + Hydro)

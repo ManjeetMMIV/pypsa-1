@@ -1,7 +1,12 @@
+import warnings
+import logging
 import pypsa
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+
+warnings.filterwarnings("ignore", category=FutureWarning)
+logging.getLogger("pypsa").setLevel(logging.WARNING)
 
 def run_economic_dispatch():
     # Initialize network
@@ -44,6 +49,8 @@ def run_economic_dispatch():
                 bus="Main Bus",
                 p_set=load_profile)
                 
+    network.sanitize()
+
     # Run optimization (Linear Optimal Power Flow)
     try:
         # PyPSA >= 0.20
@@ -52,8 +59,22 @@ def run_economic_dispatch():
         # Fallback for older PyPSA versions
         status, condition = network.lopf(solver_name='highs')
 
-    print(f"Optimization Status: {status}, {condition}")
-    print(f"Objective value (Total Cost): {network.objective:.2f} \u20ac")
+    print("\n" + "=" * 70)
+    print("NUMERICAL METHOD & OPTIMIZATION SOLVER DETAILS")
+    print("=" * 70)
+    print("Formulation            : Linear Optimal Power Flow (LOPF / Economic Dispatch)")
+    print("Optimization Problem   : Continuous Linear Program (LP)")
+    print("PyPSA Optimization API : Linopy frontend -> HiGHS solver backend")
+    print("Numerical Method       : Revised Dual Simplex Method")
+    sm = getattr(network.model, "solver_model", None)
+    if sm is not None:
+        info = sm.getInfo()
+        print(f"Simplex Iterations     : {info.simplex_iteration_count} iterations (solution obtained)")
+        print(f"Presolve Status        : {sm.getModelPresolveStatus()}")
+        print(f"Solver Model Status    : {sm.modelStatusToString(sm.getModelStatus())}")
+    print(f"Optimization Status    : {status}, condition: {condition}")
+    print(f"Objective (Total Cost) : {network.objective:,.2f} \u20ac")
+    print("=" * 70 + "\n")
     
     # Show dispatch results
     dispatch_results = network.generators_t.p
