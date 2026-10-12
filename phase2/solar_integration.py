@@ -65,7 +65,7 @@ HOURS    = 24          # simulation horizon
 CONV_PNOM     = 200.0  # MW   – conventional plant capacity
 CONV_COST     = 40.0   # $/MWh – fuel + O&M
 SOLAR_PNOM    = 80.0   # MWp  – solar farm rated capacity
-SOLAR_COST    = 0.0    # $/MWh – zero marginal cost (fuel-free)
+SOLAR_COST    = 5.0    # $/MWh – variable O&M (panel cleaning, inverter servicing)
 
 # Load data  (base / peak values – actual profiles are time-varying)
 LOAD_BUS2_P   = 60.0   # MW  – industrial base
@@ -265,10 +265,18 @@ def print_dispatch_table(n):
     print(f"  Total        : {total_energy:8.1f} MWh")
 
      # --- cost ---
-    conv_cost = conv_energy * CONV_COST
-    print(f"\n  Fuel cost (conventional only) : ${conv_cost:,.0f}")
-    print(f"  Without solar (all conv)     : ${total_energy * CONV_COST:,.0f}")
-    print(f"  Savings from solar           : ${(total_energy - conv_energy) * CONV_COST:,.0f}")
+    conv_cost     = conv_energy * CONV_COST
+    solar_cost    = solar_energy * SOLAR_COST
+    actual_cost   = conv_cost + solar_cost
+    all_conv_cost = total_energy * CONV_COST
+    savings       = all_conv_cost - actual_cost
+
+    print("\n--- Economic Summary (24 h) ---")
+    print(f"  Conventional cost (${CONV_COST:.1f}/MWh) : ${conv_cost:,.0f}  ({100*conv_cost/actual_cost:.1f}%)")
+    print(f"  Solar PV O&M cost (${SOLAR_COST:.1f}/MWh) : ${solar_cost:,.0f}  ({100*solar_cost/actual_cost:.1f}%)")
+    print(f"  Total system operating cost   : ${actual_cost:,.0f}")
+    print(f"  Without solar (all conv)      : ${all_conv_cost:,.0f}")
+    print(f"  Net savings from solar PV     : ${savings:,.0f}  ({100*savings/all_conv_cost:.1f}% reduction)")
 
     return tbl
 
@@ -381,7 +389,7 @@ if __name__ == "__main__":
     print(f"\nNetwork: {len(net.buses)} buses, {len(net.generators)} generators, "
           f"{len(net.loads)} loads, {len(net.lines)} lines")
     print(f"Snapshots: {HOURS} hours")
-    print(f"Solar PV rated: {SOLAR_PNOM} MWp  |  Conv rated: {CONV_PNOM} MW")
+    print(f"Solar PV rated: {SOLAR_PNOM} MWp (${SOLAR_COST:.1f}/MWh)  |  Conv rated: {CONV_PNOM} MW (${CONV_COST:.1f}/MWh)")
     lp = load_profile(HOURS)
     print(f"Total load: {LOAD_BUS2_P + LOAD_BUS4_P} MW avg  "
           f"(varies {lp['bus2'].min() + lp['bus4'].min():.1f} – "

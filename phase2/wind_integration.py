@@ -71,7 +71,7 @@ HOURS    = 24          # simulation horizon
 CONV_PNOM     = 200.0  # MW   – conventional plant capacity
 CONV_COST     = 40.0   # $/MWh – fuel + O&M
 WIND_PNOM     = 100.0  # MW   – wind farm rated capacity
-WIND_COST     = 0.0    # $/MWh – zero marginal cost (fuel-free)
+WIND_COST     = 3.0    # $/MWh – variable O&M (turbine maintenance, lubrication)
 
 # Load data  (base / peak values – actual profiles are time-varying)
 LOAD_BUS2_P   = 60.0   # MW  – industrial base
@@ -281,10 +281,18 @@ def print_dispatch_table(n):
     print(f"\n  Wind capacity factor : {wind_cf:.1f}%")
 
     # --- cost ---
-    conv_cost = conv_energy * CONV_COST
-    print(f"\n  Fuel cost (conventional only) : ${conv_cost:,.0f}")
-    print(f"  Without wind (all conv)      : ${total_energy * CONV_COST:,.0f}")
-    print(f"  Savings from wind            : ${(total_energy - conv_energy) * CONV_COST:,.0f}")
+    conv_cost     = conv_energy * CONV_COST
+    wind_cost     = wind_energy * WIND_COST
+    actual_cost   = conv_cost + wind_cost
+    all_conv_cost = total_energy * CONV_COST
+    savings       = all_conv_cost - actual_cost
+
+    print("\n--- Economic Summary (24 h) ---")
+    print(f"  Conventional cost (${CONV_COST:.1f}/MWh) : ${conv_cost:,.0f}  ({100*conv_cost/actual_cost:.1f}%)")
+    print(f"  Wind farm O&M cost (${WIND_COST:.1f}/MWh) : ${wind_cost:,.0f}  ({100*wind_cost/actual_cost:.1f}%)")
+    print(f"  Total system operating cost   : ${actual_cost:,.0f}")
+    print(f"  Without wind (all conv)       : ${all_conv_cost:,.0f}")
+    print(f"  Net savings from wind farm    : ${savings:,.0f}  ({100*savings/all_conv_cost:.1f}% reduction)")
 
     return tbl
 
@@ -397,7 +405,7 @@ if __name__ == "__main__":
     print(f"\nNetwork: {len(net.buses)} buses, {len(net.generators)} generators, "
           f"{len(net.loads)} loads, {len(net.lines)} lines")
     print(f"Snapshots: {HOURS} hours")
-    print(f"Wind farm rated: {WIND_PNOM} MW  |  Conv rated: {CONV_PNOM} MW")
+    print(f"Wind farm rated: {WIND_PNOM} MW (${WIND_COST:.1f}/MWh)  |  Conv rated: {CONV_PNOM} MW (${CONV_COST:.1f}/MWh)")
     lp = load_profile(HOURS)
     print(f"Total load: {LOAD_BUS2_P + LOAD_BUS4_P} MW avg  "
           f"(varies {lp['bus2'].min() + lp['bus4'].min():.1f} – "

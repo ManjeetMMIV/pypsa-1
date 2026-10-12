@@ -1,12 +1,12 @@
 INFO:linopy.model: Solve problem using Highs solver
-INFO:linopy.io: Writing time: 0.06s
+INFO:linopy.io: Writing time: 0.21s
 INFO:linopy.constants: Optimization successful: 
 Status: ok
 Termination condition: optimal
 Solution: 144 primals, 408 duals
-Objective: 1.36e+05
+Objective: 1.38e+05
 Solver: highs
-Runtime: 0.00s
+Runtime: 0.01s
 MIP gap: inf
 Dual bound: 0.00e+00
 Solver model: available
@@ -14,10 +14,10 @@ Solver message: Optimal
 
 Running HiGHS 1.15.1 (git hash: 04024d7): Copyright (c) 2026 under MIT licence terms
 Includes third-party software components, see THIRD_PARTY_NOTICES.md for full details
-LP linopy-problem-c7_z4e1f has 408 rows; 144 cols; 624 nonzeros
+LP linopy-problem-gc69xtmm has 408 rows; 144 cols; 624 nonzeros
 Coefficient ranges:
   Matrix  [1e+00, 5e+01]
-  Cost    [4e+01, 4e+01]
+  Cost    [5e+00, 4e+01]
   Bound   [0e+00, 0e+00]
   RHS     [5e+00, 2e+02]
 Presolving model
@@ -27,18 +27,18 @@ Presolve reductions: rows 0(-408); columns 0(-144); nonzeros 0(-624) - Reduced t
 Performed postsolve
 Solving the original LP from the solution after postsolve
 
-Model name          : linopy-problem-c7_z4e1f
+Model name          : linopy-problem-gc69xtmm
 Model status        : Optimal
-Objective value     :  1.3567698603e+05
-P-D objective error :  0.0000000000e+00
-HiGHS run time      :          0.00
+Objective value     :  1.3791736278e+05
+P-D objective error :  2.1102292242e-16
+HiGHS run time      :          0.01
 ╔══════════════════════════════════════════════════════════════╗
 ║   Solar PV Integration Study – 4-Bus System (PyPSA OPF)   ║
 ╚══════════════════════════════════════════════════════════════╝
 
 Network: 4 buses, 2 generators, 2 loads, 4 lines
 Snapshots: 24 hours
-Solar PV rated: 80.0 MWp  |  Conv rated: 200.0 MW
+Solar PV rated: 80.0 MWp ($5.0/MWh)  |  Conv rated: 200.0 MW ($40.0/MWh)
 Total load: 160.0 MW avg  (varies 124.9 – 180.6 MW)
 
 --- Running 24-hour Linear OPF ---
@@ -92,9 +92,12 @@ Hour
   Solar PV     :    448.1 MWh  (11.7%)
   Total        :   3840.0 MWh
 
-  Fuel cost (conventional only) : $135,677
-  Without solar (all conv)     : $153,600
-  Savings from solar           : $17,923
+--- Economic Summary (24 h) ---
+  Conventional cost ($40.0/MWh) : $135,677  (98.4%)
+  Solar PV O&M cost ($5.0/MWh) : $2,240  (1.6%)
+  Total system operating cost   : $137,917
+  Without solar (all conv)      : $153,600
+  Net savings from solar PV     : $15,683  (10.2% reduction)
 
 --- Peak Line Flows ---
       Peak_MW  S_nom_MVA  Loading_%  Length_km
